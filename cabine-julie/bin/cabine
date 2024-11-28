@@ -1,0 +1,11 @@
+#! /bin/bash
+
+#installation du fichier 'cabine' dans /usr/bin
+# sudo ln -sv /home/julie/PyCabine/cabine-julie/bin/cabine /usr/bin/
+PWD=`pwd`
+
+PYTHON=/usr/bin/python
+WORKDIR=/cabine-julie/src/
+
+
+$PYTHON ${PWD}${WORKDIR}
