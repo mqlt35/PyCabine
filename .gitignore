@@ -1,2 +1,5 @@
+claviermatriciel/venv/
+tests/venv/
+tests/generaluser-gs-main/
 .vscode
 __pycache__
