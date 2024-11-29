@@ -5,7 +5,13 @@
 PWD=`pwd`
 
 PYTHON=/usr/bin/python
-WORKDIR=/cabine-julie/src/
 
+# dirname = renvoie au dossier parent
+# realpath = renvoie le chemin réel du script et remonte le lien simbolique
+#Fix : résout le problème de lancement du script en dehors du dossier du projet.
+WORKDIR=$(dirname $(dirname $(realpath $0)))/src/
 
-$PYTHON ${PWD}${WORKDIR}
+#$* Récupère l'ensemble des paramètres passé en ligne de commande.
+# $1, $2... Récupère un paramètre à la fois
+
+$PYTHON ${WORKDIR}
