@@ -12,7 +12,8 @@ from pygame import mixer
 mixer.init() 
   
 # Loading the song 
-mixer.music.load("/home/rpi/Documents/tests/attente2.wav") 
+# Julie-b35 : Modification apporté par pierrot sur la modification du chemin d'accès au fichier.
+mixer.music.load("attente2.wav") 
   
 # Setting the volume 
 mixer.music.set_volume(0.7) 
