@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 def scenario_1():
     print("Lancement scénario 1")

@@ -1,6 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 # Constante afin de savoir quelle scénario lancé
-SCENARIO = 2
+SCENARIO = 1
+Debug = True
 
 """
 Ce fichier ne s'occupe que de lancer le scénario sur lequel je travail.
@@ -17,11 +20,11 @@ def main():
     #Switch qui décide quelle scénario lancé.
     match SCENARIO:
         case 1:
-            import Cabine.Scenarios.Scenario1
+            from Cabine.Scenarios import Scenario1
         case 2:
-            import Cabine.Scenarios.Scenario2
+            from Cabine.Scenarios import Scenario2
         case 3:
-            import Cabine.Scenarios.Scenario3
+            from Cabine.Scenarios import Scenario3
 
 if __name__ == "__main__" :
     main()
