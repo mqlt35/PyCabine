@@ -5,8 +5,10 @@ from Cabine.Utils import Utils
 import pygame
 pygame.init()
 from pygame import mixer 
+import time
 
-EXTENSION_FILE_SOUND = ".wav"
+#EXTENSION_FILE_SOUND = ".wav"
+EXTENSION_FILE_SOUND = ".mp3"
 
 DEMANDE_RACCROCHER = 0
 
