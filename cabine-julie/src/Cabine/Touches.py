@@ -52,17 +52,17 @@ class Touches :
 
 	# Fonction appelée à chaque pression de touche
 	def handle_key_press(self,key):
-	    print(f"Touche appuyée : {key}")
-	    self.pressed_button = key
-	    self.play_dtmf(key)  # Jouer la note associée à la touche
+		print(f"Touche appuyée : {key}")
+		self.pressed_button = key
+		self.play_dtmf(key)  # Jouer la note associée à la touche
 
 
     # Générer un son pour une combinaison de fréquences
 	def generate_dtmf(self,frequencies, duration=0.2, sample_rate=44100):
-	    t = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
-	    wave = sum(np.sin(2 * np.pi * f * t) for f in frequencies)
-	    wave = (wave * 32767 / np.max(np.abs(wave))).astype(np.int16)  # Normaliser
-	    return pygame.sndarray.make_sound(wave)
+		t = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
+		wave = sum(np.sin(2 * np.pi * f * t) for f in frequencies)
+		wave = (wave * 32767 / np.max(np.abs(wave))).astype(np.int16)  # Normaliser
+		return pygame.sndarray.make_sound(wave)
 
 	# Jouer un son pour une touche
 	def play_dtmf(self,key):			    
