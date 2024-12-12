@@ -1,0 +1,10 @@
+# Fichier/Dossier à ignorer générer par  Yannick / Pierro
+claviermatriciel/venv/
+tests/venv/
+tests/generaluser-gs-main/
+
+# Fichier/Dossier à ignorer générer par  Julie
+.vscode
+__pycache__
+tests/combiné.wav
+venv/
