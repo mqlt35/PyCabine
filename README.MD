@@ -14,13 +14,13 @@ Charte : [Charte Cabine Téléphonique de Témoignage](https://docs.google.com/d
 Afin d'éviter de polluer le dépôt git, j'utilise environnement de virtuelle de python
 
 ```BASH
-python -m venv $HOME/venv
+python -m venv ./venv
 ```
 
 Pour lancer l'environnement virtuelle de python faire :
 
 ```BASH
-source $HOME/venv/bin/activate
+source ./venv/bin/activate
 ```
 
 Pour quiter l'environnement virtuelle faire :
@@ -32,7 +32,7 @@ deactivate
 
 ### Modules python
 
-Pour installer les modules, lancer la commande `python -r requirements.txt` en particulier dans l'environnement virtuelle
+Pour installer les modules, lancer la commande `pip install -r requirements.txt` en particulier dans l'environnement virtuelle
 
 #### Attention
 

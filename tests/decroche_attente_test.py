@@ -13,7 +13,8 @@ mixer.init()
   
 # Loading the song 
 # Julie-b35 : Modification apporté par pierrot sur la modification du chemin d'accès au fichier.
-mixer.music.load("attente2.wav") 
+#mixer.music.load("attente2.wav") 
+mixer.music.load("../cabine-julie/ressources/son/acceuil.wav") 
   
 # Setting the volume 
 mixer.music.set_volume(0.7) 

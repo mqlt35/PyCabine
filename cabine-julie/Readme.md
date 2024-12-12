@@ -3,6 +3,14 @@
 ## Étape du projet
 
 - [ ] Initialisation du projet
+  - [ ] Gestion des erreurs
+  - [ ] Création de la classe utilitaire "Utils.py"
+  - [ ] Gestion des Locales (Langue) "Locals.py"- il n'y a pas lieu de traduction, mais éventuellement de correction de fautes
+  - [ ] Gestion de l'état du Combinée (raccroché, décrocher) "Combinee.py"
+  - [ ] Gestion du son
+  - [ ] Gestion du clavier matricielle
+  - [ ] Gestion de l'enregistrement
+  - [ ] Mise en place de test GPIO
 - [ ] Programmation des scénarios
   - [ ] Scénario 1 (témoignage simple)
   - [ ] Scénario 2 (témoignage avec possibilité de réécoute et de modification)
@@ -10,6 +18,8 @@
 - [ ] Enregistrement du fichier audio
 - [ ] Publication des témoignages
 - [ ] Consultation des témoignages
+- [ ] Nettoyage
+  - [ ] Correction des fautes de frappes
 
 ---
 
@@ -23,6 +33,8 @@
 - Récupérer les dernières info du projet `git pull upstream main`
 - Créer une nouvelle branches (local) `git checkout -b develop`
   - La commande `git stash`peut être utile pour *mettre de côté* vos modification sans faire de commit
+  - `git stash push -u` pour inclure les fichiers non tracker.
+  - L'instruction suivante `git stash show -p stash@{0} -u > modification.patch` créer un patch depuis les modification locale.
 
 --- 
 
