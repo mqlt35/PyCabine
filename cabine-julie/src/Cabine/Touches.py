@@ -87,12 +87,14 @@ class Touches :
 		pygame.mixer.quit()	
 
 	def load(self):
-		self.keypad.registerKeyPressHandler(self.handle_key_press)	
-		self._load = True
+		if self._load == False:
+			self.keypad.registerKeyPressHandler(self.handle_key_press)	
+			self._load = True
 
 	def unload(self):
-		self.keypad.unregisterKeyPressHandler(self.handle_key_press)
-		self._load = False
+		if self._load == True:
+			self.keypad.unregisterKeyPressHandler(self.handle_key_press)
+			self._load = False
 
 	def getButtonPressed(self):
 		if not self._load:

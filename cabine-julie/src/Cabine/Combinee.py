@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# Déclancher une erreur si le script est exécuté directement.
+if __name__ == "__main__" : 
+    raise Exception("Ce scripte n'est pas exécutable.")
+
 import RPi.GPIO as GPIO  # bibliothèque pour gérer les GPIO
 
 #Assignation du pin GPIO
@@ -19,6 +23,12 @@ class Combinee :
         self._setStateCombi()
         return self.state
 
+    def combiRaccrocher(self):
+        return self.getStateCombi() == False
+    
+    def combiDeccrocher(self):
+        return self.getStateCombi() == True
+    
     # Renvoie l'état sous forme de texte.
     def getStateCombiTexte(self):
         etat_texte = ["Raccroché", "Décroché"]
