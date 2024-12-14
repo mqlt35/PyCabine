@@ -26,7 +26,7 @@ class Combinee :
         return etat_texte[self.state]
 
     # nettoye toutes les pins.
-    def cleanup(self):
+    def clean(self):
         GPIO.cleanup()
 
     # Fonction interne, récupère l'état du Pin Gpio.

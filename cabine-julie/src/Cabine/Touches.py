@@ -35,6 +35,12 @@ KEYPAD = [
     ["*", 0, "#"]
 ]
 
+NAME_KEYPAD = {
+	1 : KEYPAD[0][0], 4 : KEYPAD[1][0], 7 : KEYPAD[2][0], "*" : KEYPAD[3][0],
+	2 : KEYPAD[0][1], 5 : KEYPAD[1][1], 8 : KEYPAD[2][1],  0  : KEYPAD[3][1],
+	3 : KEYPAD[0][2], 6 : KEYPAD[1][2], 9 : KEYPAD[2][2], "#" : KEYPAD[3][2]
+}
+
 ROW_PINS = [5, 6, 13, 19]  # Numérotation BCM
 COL_PINS = [16, 20, 21]    # Numérotation BCM
 
@@ -46,13 +52,14 @@ class Touches :
 	def __init__(self):
 		# Associer la fonction de gestion des touches au clavier
 		factory = rpi_gpio.KeypadFactory()
-		keypad = factory.create_keypad(keypad=KEYPAD, row_pins=ROW_PINS, col_pins=COL_PINS)
-		keypad.registerKeyPressHandler(self.handle_key_press)	
+		self.keypad = factory.create_keypad(keypad=KEYPAD, row_pins=ROW_PINS, col_pins=COL_PINS)
+		#self.load()
 		self.pressed_button = None
+		self._load = False
 
 	# Fonction appelée à chaque pression de touche
 	def handle_key_press(self,key):
-		print(f"Touche appuyée : {key}")
+		#print(f"Touche appuyée : {key}")
 		self.pressed_button = key
 		self.play_dtmf(key)  # Jouer la note associée à la touche
 
@@ -69,29 +76,31 @@ class Touches :
 		# Associer chaque touche à un son
 		dtmf_sounds = {key: self.generate_dtmf(freqs) for key, freqs in DTMF_FREQS.items()}
 		if key in dtmf_sounds:
-			print(f"Jouer le son pour la touche : {key}")
+			#print(f"Jouer le son pour la touche : {key}")
 			sound = dtmf_sounds[key]
 			sound.play()
 			while pygame.mixer.get_busy():
 				time.sleep(0.05)
+	def clean(self):
+		#Nettoyage
+		GPIO.cleanup()
+		pygame.mixer.quit()	
+
+	def load(self):
+		self.keypad.registerKeyPressHandler(self.handle_key_press)	
+		self._load = True
+
+	def unload(self):
+		self.keypad.unregisterKeyPressHandler(self.handle_key_press)
+		self._load = False
 
 	def getButtonPressed(self):
-		try:
-			print("Appuyez sur les touches du clavier matriciel (Ctrl+C pour quitter)...")
-			while True:
-				 # Attente pour éviter une utilisation CPU excessive
-				
-				time.sleep(0.1)  # Attente pour éviter une utilisation CPU excessive
-				if (clsTouche.pressed_button != None) :
-					print(clsTouche.pressed_button)
-					return clsTouche.pressed_button 
-
-		except:
-			print("Des erreurs se sont produites")
-		finally:
-			print("Nettoyage et arrêt...")
-			GPIO.cleanup()
-			pygame.mixer.quit()		
+		if not self._load:
+			raise Exception("Touches.py : Les touches du clavier doivent être d'abord Charger.")
+		
+		save_pressed_button = self.pressed_button
+		self.pressed_button = None
+		return save_pressed_button 
 
 if __name__ == "__main__" :
 	clsTouche = Touches()

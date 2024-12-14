@@ -46,8 +46,8 @@ def main():
         # A commenter lorsque le programme sera lancer en arrière plan
         #FIXME: Trouver un moyen de quiter le programme proprement à la fin de service
         # NOTE: Une solution en ajoutant un bouton, celui-ci arrêtra le programme, puis le raspberry?
-        if(quiterProgramme()):
-            break
+        #if(quiterProgramme()):
+        #    break
 
 if __name__ == "__main__" :
     Utils.init()
@@ -55,4 +55,8 @@ if __name__ == "__main__" :
     #print(L("HelloWorld"))
     #exit()
     #TODO Test de la classe Langue, le but est de renvoyer un texte
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("Fin du programme")
+        Utils.Clean()
