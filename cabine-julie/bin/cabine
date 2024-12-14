@@ -158,6 +158,42 @@ demo() {
 
 }
 
+start() {
+         # dirname = renvoie au dossier parent
+    # realpath = renvoie le chemin réel du script et remonte le lien simbolique
+    #Fix : résout le problème de lancement du script en dehors du dossier du projet.
+    WORKDIR=$(dirname $(dirname $(realpath $0)))/src/
+    OldIFS=$IFS
+
+    VENV=$(dirname $(dirname $(dirname ${WORKDIR})))/venv
+
+    PYTHON=/usr/bin/python
+    PYTHON=$VENV/bin/python
+    #$* Récupère l'ensemble des paramètres passé en ligne de commande.
+    # $1, $2... Récupère un paramètre à la fois
+
+    $PYTHON ${WORKDIR} start
+
+}
+
+stop() {
+            # dirname = renvoie au dossier parent
+    # realpath = renvoie le chemin réel du script et remonte le lien simbolique
+    #Fix : résout le problème de lancement du script en dehors du dossier du projet.
+    WORKDIR=$(dirname $(dirname $(realpath $0)))/src/
+    OldIFS=$IFS
+
+    VENV=$(dirname $(dirname $(dirname ${WORKDIR})))/venv
+
+    PYTHON=/usr/bin/python
+    PYTHON=$VENV/bin/python
+    #$* Récupère l'ensemble des paramètres passé en ligne de commande.
+    # $1, $2... Récupère un paramètre à la fois
+
+    $PYTHON ${WORKDIR} stop
+
+}
+
 : "
 =====================================================================================================================
 ====                                                                                                             ====
@@ -192,6 +228,16 @@ demo() {
         test)
             echo "Test du projet"
             # TODO Mettre en place la fonction test
+            ;;
+
+        start)
+            echo "Démarrage du service"
+            start
+            ;;
+
+        stop)
+            echo "Arrêt du service"
+            stop
             ;;
         *)
             echo "Mode démo actif :" 

@@ -8,3 +8,6 @@ tests/generaluser-gs-main/
 __pycache__
 tests/combiné.wav
 venv/
+
+# Ignioer les Enregistrement vocaux
+cabine-julie/upload/*.mp3
