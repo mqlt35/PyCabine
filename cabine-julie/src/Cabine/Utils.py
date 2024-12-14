@@ -22,7 +22,12 @@ class Utils:
     -->  getWorkDir() : Renvoie le répertoire de travail du projet, déclenche une Exception de type 'AttributeError'
                         si initWorkdir n'a pas été appelé.
     """
-
+    def Clean():
+        from Cabine.Factory import Factory
+        touches = Factory().getClass("Touches")
+        combi = Factory().getClass("Combinee")
+        touches.clean()
+        combi.clean()
 
     """
     =====================================================================================================================
@@ -76,6 +81,10 @@ class Utils:
             Méthode d'initialisation, permet d'initialiser le projet si il y a lieu (@see src/__main__.py)        
         """
         Utils.initWorkDir()
+        from Cabine.Factory import Factory
+        factory = Factory()
+        factory.getClass("Touches")
+        factory.getClass("Combinee")
         # TODO: ajouter des instruction ci-dessous servant à initialiser le projet.
 
 """

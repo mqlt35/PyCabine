@@ -6,9 +6,9 @@
   - [ ] Gestion des erreurs
   - [ ] Création de la classe utilitaire "Utils.py"
   - [ ] Gestion des Locales (Langue) "Locals.py"- il n'y a pas lieu de traduction, mais éventuellement de correction de fautes
-  - [ ] Gestion de l'état du Combinée (raccroché, décrocher) "Combinee.py"
-  - [ ] Gestion du son
-  - [ ] Gestion du clavier matricielle
+  - [x] Gestion de l'état du Combinée (raccroché, décrocher) "Combinee.py"
+  - [x] Gestion du son
+  - [x] Gestion du clavier matricielle
   - [ ] Gestion de l'enregistrement
   - [ ] Mise en place de test GPIO
 - [ ] Programmation des scénarios
