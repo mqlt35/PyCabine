@@ -145,9 +145,10 @@ demo() {
     # realpath = renvoie le chemin réel du script et remonte le lien simbolique
     #Fix : résout le problème de lancement du script en dehors du dossier du projet.
     WORKDIR=$(dirname $(dirname $(realpath $0)))/src/
+    echo $WORKDIR
     OldIFS=$IFS
 
-    VENV=$(dirname $(dirname $(dirname ${WORKDIR})))/venv
+    VENV=$(dirname $(dirname ${WORKDIR}))/venv
 
     PYTHON=/usr/bin/python
     PYTHON=$VENV/bin/python
