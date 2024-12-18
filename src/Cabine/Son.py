@@ -5,7 +5,7 @@
 if __name__ == "__main__" : 
     raise Exception("Ce scripte n'est pas exécutable.")
 
-from Cabine.Utils import Utils
+from Tools import Utils
 import pygame
 pygame.init()
 from pygame import mixer 
@@ -36,7 +36,7 @@ La classe son permet de jouer différent son avec le haut parleur du combinée.
 class Son:
 
     def __init__ (self,):
-        from Cabine.Factory import Factory
+        from Tools.Factory import Factory
         self.Combi = Factory().getClass("Combinee")
         self.Touches = Factory().getClass("Touches")
         self.directorySon = Utils.getWorkDir() + "/ressources/son/"

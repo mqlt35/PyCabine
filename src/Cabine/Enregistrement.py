@@ -26,8 +26,8 @@ class Enregistrement():
         return self._instance
     def __init__(self): # A initialiser qu'une seule fois.
         if not hasattr(self, "_initialized"):
-            from Cabine.Utils import Utils
-            from Cabine.Factory import Factory
+            from Tools import Utils
+            from Tools import Factory
             self._initialized = True
             self.directoryVocalMsg = Utils.getWorkDir() + "/upload/"
             self.saveMp3File = None

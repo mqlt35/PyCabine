@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Constante afin de savoir quelle scénario lancé
-from Cabine.Utils import Utils
-from Cabine.Locals import L
+from Tools import Utils
 
 SCENARIO = 1
 Debug = True
