@@ -1,6 +1,4 @@
 # Fichier/Dossier à ignorer générer par  Yannick / Pierro
-claviermatriciel/venv/
-tests/venv/
 tests/generaluser-gs-main/
 
 # Fichier/Dossier à ignorer générer par  Julie
@@ -10,4 +8,4 @@ tests/combiné.wav
 venv/
 
 # Ignioer les Enregistrement vocaux
-cabine-julie/upload/*.mp3
+upload/*.mp3

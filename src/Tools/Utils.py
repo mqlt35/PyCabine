@@ -7,7 +7,7 @@ if __name__ == "__main__" :
 
 # J'ai juste besoin du module PATH
 from os import path
-from Cabine.Exceptions.AttributeError import AttributeError
+from Exceptions.AttributeError import AttributeError
 
 #TODO ce fichier peut être importer dans plusieur scripte, je crain des imports Ciruclaire
 #@see https://docs.kanaries.net/fr/topics/Python/python-circular-import
@@ -23,7 +23,7 @@ class Utils:
                         si initWorkdir n'a pas été appelé.
     """
     def Clean():
-        from Cabine.Factory import Factory
+        from Tools.Factory import Factory
         touches = Factory().getClass("Touches")
         combi = Factory().getClass("Combinee")
         touches.clean()
@@ -69,6 +69,12 @@ class Utils:
     ====                                                                                                             ====
     =====================================================================================================================
     """
+
+    def Fix():
+        #from Tools.FixLgpio import fixit
+        #fixit()
+        pass
+
     def initWorkDir():
         """
             Méthode statique afin de définire le répertoire principale de travail du Projet PyCabine.
@@ -81,7 +87,8 @@ class Utils:
             Méthode d'initialisation, permet d'initialiser le projet si il y a lieu (@see src/__main__.py)        
         """
         Utils.initWorkDir()
-        from Cabine.Factory import Factory
+        #Utils.Fix()
+        from Tools.Factory import Factory
         factory = Factory()
         factory.getClass("Touches")
         factory.getClass("Combinee")
