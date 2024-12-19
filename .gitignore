@@ -1,3 +1,11 @@
-claviermatriciel/venv/
-tests/venv/
+# Fichier/Dossier à ignorer générer par  Yannick / Pierro
 tests/generaluser-gs-main/
+
+# Fichier/Dossier à ignorer générer par  Julie
+.vscode
+__pycache__
+tests/combiné.wav
+venv/
+
+# Ignioer les Enregistrement vocaux
+upload/*.mp3
