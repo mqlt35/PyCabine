@@ -1,0 +1,8 @@
+./Archive
+ressources/pygame
+./ressources/son/*.mp3
+./ressources/son/*.wav
+./upload/*.mp3
+./src/__main_bis__.py
+__pycache__
+.git

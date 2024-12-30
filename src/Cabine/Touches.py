@@ -1,15 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# Déclancher une erreur si le script est exécuté directement.
+if __name__ == "__main__" : 
+    raise Exception("Ce scripte n'est pas exécutable.")
+
+
 import numpy as np
-import pygame
+#import pygame
 import time
 from pad4pi import rpi_gpio
 import RPi.GPIO as GPIO
 
 
 # Initialisation de pygame.mixer
-pygame.mixer.init(frequency=44100, size=-16, channels=1)
+#pygame.mixer.init(frequency=44100, size=-16, channels=1)
 
 # Fréquences DTMF (Hz)
 DTMF_FREQS = {
@@ -49,17 +54,19 @@ COL_PINS = [16, 20, 21]    # Numérotation BCM
 
 # Création d'une classe Touches qui renvoie le numéro de la touche appuyée et qui génère les fréquences associées (biiip)
 class Touches :
-	def __init__(self):
+	def __init__(self, api):
 		# Associer la fonction de gestion des touches au clavier
-		factory = rpi_gpio.KeypadFactory()
-		self.keypad = factory.create_keypad(keypad=KEYPAD, row_pins=ROW_PINS, col_pins=COL_PINS)
-		#self.load()
+		self.__api = api
 		self.pressed_button = None
 		self._load = False
 
+	def configure(self):
+		self.__mixer = self.__api.getTools_Mixer()
+		factory = rpi_gpio.KeypadFactory()
+		self.keypad = factory.create_keypad(keypad=KEYPAD, row_pins=ROW_PINS, col_pins=COL_PINS)
 	# Fonction appelée à chaque pression de touche
 	def handle_key_press(self,key):
-		#print(f"Touche appuyée : {key}")
+		print(f"Touche appuyée : {key}")
 		self.pressed_button = key
 		self.play_dtmf(key)  # Jouer la note associée à la touche
 
@@ -69,7 +76,8 @@ class Touches :
 		t = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
 		wave = sum(np.sin(2 * np.pi * f * t) for f in frequencies)
 		wave = (wave * 32767 / np.max(np.abs(wave))).astype(np.int16)  # Normaliser
-		return pygame.sndarray.make_sound(wave)
+		return self.__mixer.make_sound(wave)
+		#return pygame.sndarray.make_sound(wave)
 
 	# Jouer un son pour une touche
 	def play_dtmf(self,key):			    
@@ -79,12 +87,12 @@ class Touches :
 			#print(f"Jouer le son pour la touche : {key}")
 			sound = dtmf_sounds[key]
 			sound.play()
-			while pygame.mixer.get_busy():
+			while self.__mixer.get_busy_mixer():
 				time.sleep(0.05)
 	def clean(self):
 		#Nettoyage
 		GPIO.cleanup()
-		pygame.mixer.quit()	
+		self.__mixer.clean()
 
 	def load(self):
 		if self._load == False:
@@ -104,7 +112,7 @@ class Touches :
 		self.pressed_button = None
 		return save_pressed_button 
 
-if __name__ == "__main__" :
-	clsTouche = Touches()
-	print(clsTouche.getButtonPressed())
-
+def init(api):
+    global _
+    _ = api._
+    return Touches(api)

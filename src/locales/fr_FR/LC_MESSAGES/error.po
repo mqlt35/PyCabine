@@ -1,0 +1,22 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"PO-Revision-Date: 2024-12-22 01:13+0100\n"
+"Last-Translator:  <julie@raspberrypi>\n"
+"Language-Team: French <traduc@traduc.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+
+#--------------------------------------- Exception : AttributeError ----------------------------------------------------
+
+msgid  "\nProgram ended with failure."
+msgstr "\nFin du programme avec échec."
+
+msgid  "The variable '%s', has not been defined."
+msgstr "La variable '%s', n'a pas été définis."
+
+# --------------------------------------------------------------------------------------------------------

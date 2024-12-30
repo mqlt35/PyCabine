@@ -6,7 +6,7 @@ if __name__ == "__main__" :
     raise Exception("Ce scripte n'est pas exécutable.")
 
 from enum import Enum
-import datetime
+
 
 TAUX_ECHANTILLONNAGE = 44100
 class ChoicePublication(Enum):
@@ -17,25 +17,26 @@ class Enregistrement():
     # Attribut de classe pour stocker l'unique instance
     _instance = None
 
-    def __new__(self, *args, **kwargs):
+    def __new__(self, _, *args, **kwargs):
         # Vérifie si une instance existe déjà
         # merci Chat GPT
         if not self._instance:
             self._instance = super(Enregistrement, self).__new__(self, *args, **kwargs)
             pass
         return self._instance
-    def __init__(self): # A initialiser qu'une seule fois.
+    def __init__(self, api): # A initialiser qu'une seule fois.
         if not hasattr(self, "_initialized"):
-            from Tools import Utils
-            from Tools import Factory
             self._initialized = True
-            self.directoryVocalMsg = Utils.getWorkDir() + "/upload/"
+            self.__api = api
             self.saveMp3File = None
             self.saveWaveFile = None
             self.saveWaveAmplifiedFile = None
-            self.Combi = Factory().getClass("Combinee")
+    def configure(self) :
+        self.directoryVocalMsg = self.__api.getTools_Utils().getWorkDir() + "/upload/"
+        self.__combi = self.__api.GetCls_Combiner()
 
     def setFile(self, choice_publication: ChoicePublication = ChoicePublication.INTERNET):
+        import datetime
         curent_time = datetime.datetime.now()
         tab_save_file = [
             self.directoryVocalMsg,
@@ -68,7 +69,7 @@ class Enregistrement():
                         print(f"Statut : {status}")
                     #audio.append(indata.copy())
                     fichier_wave.writeframes(indata.tobytes())
-                #print(self.Combi)
+                #print(self.__combi)
                 with sd.InputStream(
                     samplerate=TAUX_ECHANTILLONNAGE,
                     channels=1,
@@ -77,8 +78,8 @@ class Enregistrement():
                 ):
                     while True:
                         sleep(0.1) # en prévention surchage CPU.
-                        #print(self.Combi)
-                        if self.Combi.combiRaccrocher():
+                        #print(self.__combi)
+                        if self.__combi.combiRaccrocher():
                             break
                     #while GPIO.input(HOOK_PIN) == GPIO.HIGH:
                     #    time.sleep(0.1)
@@ -174,3 +175,8 @@ class Enregistrement():
         print(f"__getattr__ appelé pour : {name}")
     
         return None
+    
+def init(api):
+    global _
+    _ = api._
+    return Enregistrement(api)

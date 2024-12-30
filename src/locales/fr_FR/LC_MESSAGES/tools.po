@@ -1,0 +1,79 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"PO-Revision-Date: 2024-12-22 01:13+0100\n"
+"Last-Translator:  <julie@raspberrypi>\n"
+"Language-Team: French <traduc@traduc.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#--------------------------------------- Module : Api ----------------------------------------------------
+
+msgid "Error importing module %s : %s"
+msgstr "Erreur lors de l'import du module %s : %s"
+
+# --------------------------------------------------------------------------------------------------------
+#--------------------------------------- Module : Utils ----------------------------------------------------
+
+msgid  "Did you call the static 'Utils.setWorkDir()' method?"
+msgstr "Avez-vous fait appel à la méthode static 'Utils.setWorkDir() ?"
+
+# src/Tools/Utils.py : 96
+msgid "The Factory class was not properly initialized"
+msgstr "La classe Factory n'a pas été initialisé"
+
+#paquet argparse
+msgid "options"
+msgstr "Arguments optionnels"
+
+#paquet argparse
+msgid "usage: "
+msgstr "Utilisation: "
+
+#paquet argparse
+msgid "show this help message and exit"
+msgstr "Affiche l'aide puis quite le programme."
+
+# src/Tools/Argument.py : 24
+msgid "description"
+msgstr "Répondeur vocal accueillant des témoignage."
+
+# src/Tools/Argument.py : 25
+msgid "_epilog"
+msgstr "Ce programme à été produit par la maison de quartier La touche."
+
+# src/Tools/Factory.py :
+msgid "The 'cls' attribute has not been defined."
+msgstr "L'attribut 'cls' n'a pas été définie."
+
+# src/Tools/Factory.py :
+msgid "Parameter '%s' is of incorrect type: expected %s, got %s."
+msgstr "Le paramètre '%s' est de type incorrecte : attendu %s, obtenu %s."
+
+# src/Tools/Factory.py :
+msgid "The '%s' parameter must not be an empty string."
+msgstr "Le paramètre '%s' ne doit pas être une chaîne vide."
+
+# src/Tools/Factory.py :
+msgid "The parameters 'method', and 'value' are not defined."
+msgstr "Les paramètres 'method', et 'value' ne sont pas définis."
+
+# src/Tools/Factory.py :
+msgid "Please define a method or value."
+msgstr "Merci de définir une méthode ou une valeur."
+
+# src/Tools/Factory.py :
+msgid "The parameters 'method', and 'value' are defined."
+msgstr "Les paramètres 'method', et 'value' sont définis."
+
+msgid "Only one of the two parameters must be provided."
+msgstr "Seul un des deux paramètres doit être fournis."
+
+msgid "The parameter '_cls' containing '%s', is not a valid class"
+msgstr "Le paramètre '_cls' contenant '%s', n'est pas une classe valide"
+
+msgid "Here is the list of available classes : ('%s')"
+msgstr "Voici la liste des classe disponibles : ('%s')"

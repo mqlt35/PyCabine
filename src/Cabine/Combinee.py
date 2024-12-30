@@ -5,7 +5,7 @@
 if __name__ == "__main__" : 
     raise Exception("Ce scripte n'est pas exécutable.")
 
-import RPi.GPIO as GPIO  # bibliothèque pour gérer les GPIO
+
 
 #Assignation du pin GPIO
 GPIO_PIN_COMBINEE = 17
@@ -13,8 +13,10 @@ GPIO_PIN_COMBINEE = 17
 # Création d'une classe Combinee qui gère l'état du combinée soit il est décorché (1), soit raccroché (0)
 class Combinee :
     def __init__(self):
-        GPIO.setmode(GPIO.BCM)  # mode de numérotation des pins
-        GPIO.setup(GPIO_PIN_COMBINEE,GPIO.IN)  # pin 17 réglée en input
+        import RPi.GPIO as GPIO  # bibliothèque pour gérer les GPIO
+        self.__GPIO = GPIO
+        self.__GPIO.setmode(self.__GPIO.BCM)  # mode de numérotation des pins
+        self.__GPIO.setup(GPIO_PIN_COMBINEE,self.__GPIO.IN)  # pin 17 réglée en input
 
         self._setStateCombi()
 
@@ -37,14 +39,19 @@ class Combinee :
 
     # nettoye toutes les pins.
     def clean(self):
-        GPIO.cleanup()
+        self.__GPIO.cleanup()
 
     # Fonction interne, récupère l'état du Pin Gpio.
     def _getGpioInput(self):
         import time
         time.sleep(0.01)
-        return GPIO.input(GPIO_PIN_COMBINEE)
+        return self.__GPIO.input(GPIO_PIN_COMBINEE)
     
     # Génrère un état.
     def _setStateCombi(self):
         self.state = self._getGpioInput()
+
+def init(api):
+    global _
+    _ = api._
+    return Combinee()

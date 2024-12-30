@@ -31,7 +31,8 @@
     #Chemin vers le lien symbolique
     readonly PATH_LIEN_SYMBOLIQUE="/usr/bin/cabin"
 
-
+    #Argument passé en ligne de commande.
+    readonly ARGV=$@
 
 # Fin de la déclaration des constantes.
 : "
@@ -145,8 +146,10 @@ demo() {
     # realpath = renvoie le chemin réel du script et remonte le lien simbolique
     #Fix : résout le problème de lancement du script en dehors du dossier du projet.
     WORKDIR=$(dirname $(dirname $(realpath $0)))/src/
-    echo $WORKDIR
-    OldIFS=$IFS
+    export WORKDIR
+    LANGUAGE="fr:en"
+    export LANGUAGE
+   
 
     VENV=$(dirname $(dirname ${WORKDIR}))/venv
 
@@ -156,7 +159,8 @@ demo() {
     # $1, $2... Récupère un paramètre à la fois
     export LG_WD=/tmp
 
-    LANG=fr_FR.UTF-8  $PYTHON ${WORKDIR}
+    #LANG=fr_FR.UTF-8  
+    "$PYTHON" "${WORKDIR}" ${ARGV}
 
 }
 
@@ -200,6 +204,8 @@ stop() {
 
 }
 
+
+
 : "
 =====================================================================================================================
 ====                                                                                                             ====
@@ -238,7 +244,7 @@ stop() {
 
         start)
             echo "Démarrage du service"
-            start
+            demo
             ;;
 
         stop)
