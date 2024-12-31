@@ -3,8 +3,9 @@
 MODULES = {
     "scenarios": [
         "Cabine.Scenarios.Scenario1",
-        "Cabine.Scenarios.Scenario2",
-        "Cabine.Scenarios.Scenario3"
+        # Les Scénarios ci-dessous ne sont pas encore dévelopé.
+        # "Cabine.Scenarios.Scenario2",
+        # "Cabine.Scenarios.Scenario3"
     ],
     "tools": [
         "Tools.Utils",
@@ -15,7 +16,6 @@ MODULES = {
     "projects": [
         "Cabine.Combinee",
         "Cabine.Enregistrement",
-        # "Cabine.Locals",
         "Cabine.Son",
         "Cabine.Touches"
     ]

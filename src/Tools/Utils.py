@@ -5,11 +5,7 @@
 if __name__ == "__main__" : 
     raise Exception("Ce scripte n'est pas exécutable.")
 
-#from Tools import _
 from Exceptions.AttributeError import AttributeError
-
-#TODO ce fichier peut être importer dans plusieur scripte, je crain des imports Ciruclaire
-#@see https://docs.kanaries.net/fr/topics/Python/python-circular-import
 
 class Utils:
     """

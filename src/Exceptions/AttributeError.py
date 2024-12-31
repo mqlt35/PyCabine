@@ -12,12 +12,6 @@ class AttributeError(AttributeError):
         variable = args[1]
         msg = api._("The variable '%s', has not been defined.") % variable
 
-        """
-        #msg = L[""] % variable
-        #print(L[__name__ + ":" + __class__.__name__ + ":VariablesNonDéfinis"])
-        print(L("VariablesNonDéfinis"))
-        print(L("VariablesNonDéfinisBis"))
-        """
         if len(args) == 3 :
             msg = msg + "\n" + args[2]
 
