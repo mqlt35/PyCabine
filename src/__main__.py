@@ -3,7 +3,7 @@
 
 from Api import initialiser_projet
 
-SCENARIO = 1
+
 
 def actualise_locales():
     import subprocess
@@ -25,9 +25,11 @@ def actualise_locales():
             print("Code de retour : ", e.returncode)
             print("Sortie erreur", e.stderr)
 
+
+
 def main():
     app = initialiser_projet()
-    app.RunScenario(SCENARIO)
+    app.Run()
     
 
 
@@ -35,7 +37,11 @@ if __name__ == "__main__" :
     try:
         actualise_locales()
         main()
-    except Exception:
-        print("Fin du programme")
+    except Exception as e:
+        print("Une erreur est survenue : ")
+        raise e
+
+    except KeyboardInterrupt:
+        print("Arrêt du programme demandé.")
     finally:
         print("Le programme à été arrêté")

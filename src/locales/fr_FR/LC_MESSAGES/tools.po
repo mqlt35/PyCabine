@@ -77,3 +77,6 @@ msgstr "Le paramètre '_cls' contenant '%s', n'est pas une classe valide"
 
 msgid "Here is the list of available classes : ('%s')"
 msgstr "Voici la liste des classe disponibles : ('%s')"
+
+msgid "Tools have not been initialized."
+msgstr "Les outils ne sont pas encore initialisé"

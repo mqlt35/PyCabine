@@ -10,27 +10,41 @@ class Argument():
     La classe "Argument" permet d'analyser la ligne de commande.
 
     """
-    def __init__(self):
+    def __init__(self, api):
         import sys
-        from argparse import ArgumentParser
-        from Tools import _
+        self.__api = api
         
         self.argv = sys.argv
         self.args = None
         #self.argv.pop()
+        #self.args = self.parser.parse_args()
+
+    def configure(self) : 
+        _ = self.__api._
+        from argparse import ArgumentParser
         self.parser = ArgumentParser(
         #self.parser = _Argument(
             prog= "cabine",
             #Voice answering machine welcoming testimonials
             description= _("description"),
-            epilog= _("_epilog")
+            epilog= _("_epilog"),
         )
-        #self.args = self.parser.parse_args()
+        self.sub_parser = self.parser.add_subparsers(
+            dest="command",
+            required=False,
+            help=_("Mode d'éxécution"),
+        )
 
     def add_argument(self, *args, **kwargs):
         self.parser.add_argument(*args, **kwargs)
 
-    def get_args(self):
+    def add_args_sub_parser(self, names, **options):
+      
+        sub_parser = self.sub_parser.add_parser(names, help=options["help"])
+        for command in options["commands"]:
+            sub_parser.add_argument(*command["names"], **command["parameters"])
+
+    def get_options(self):
         return self.args
     
     def parse_args(self):
@@ -38,5 +52,4 @@ class Argument():
 
 def init(api):
     global _
-    _ = api._
-    return Argument()
+    return Argument(api)

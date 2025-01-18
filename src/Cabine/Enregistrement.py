@@ -8,15 +8,18 @@ if __name__ == "__main__" :
 from enum import Enum
 
 
-TAUX_ECHANTILLONNAGE = 44100
-class ChoicePublication(Enum):
-    INTERNET = 1
-    PRIVER = 2
+
+
 
 class Enregistrement():    
     # Attribut de classe pour stocker l'unique instance
     _instance = None
-
+    
+    TAUX_ECHANTILLONNAGE = 44100
+    class ChoicePublication(Enum):
+        INTERNET = 1
+        PRIVER = 2
+    
     def __new__(self, _, *args, **kwargs):
         # Vérifie si une instance existe déjà
         # merci Chat GPT
@@ -62,7 +65,7 @@ class Enregistrement():
             with wave.open(self.saveWaveFile, 'wb') as fichier_wave:
                 fichier_wave.setnchannels(1)
                 fichier_wave.setsampwidth(2)
-                fichier_wave.setframerate(TAUX_ECHANTILLONNAGE)
+                fichier_wave.setframerate(self.TAUX_ECHANTILLONNAGE)
                 # Démarrage de l'enregistrement en streaming
                 def callback(indata, frames, time, status):
                     if status:
@@ -71,7 +74,7 @@ class Enregistrement():
                     fichier_wave.writeframes(indata.tobytes())
                 #print(self.__combi)
                 with sd.InputStream(
-                    samplerate=TAUX_ECHANTILLONNAGE,
+                    samplerate=self.TAUX_ECHANTILLONNAGE,
                     channels=1,
                     dtype='int16',
                     callback=callback
@@ -163,18 +166,6 @@ class Enregistrement():
             print(f"Permission refusée : {self.saveWaveAmplifiedFile} : {e}")
         except Exception as e:
             print(f"Un erreur est survenue : {e}")
-
-    def __getattr__(self, name):
-        if name == "ChoicePublication":
-            return ChoicePublication
-        elif name == "_initialized":
-            # Sans déclancher cette erreur et en retournant None
-            # hasattr dans __init__ pète les plomb.
-            raise AttributeError("L'arguement existe pas.")
-        # Intercepte les attributs inexistantsy
-        print(f"__getattr__ appelé pour : {name}")
-    
-        return None
     
 def init(api):
     global _

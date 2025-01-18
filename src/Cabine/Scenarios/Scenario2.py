@@ -22,6 +22,9 @@ class Scenario2() :
          if not hasattr(self, "_initialized"):
             self._initialized = True
 
+    def exec(self):
+        print("Scenario2 : Lancement scénario 2.")
+
 def init(api):
     global _
     _ = api._

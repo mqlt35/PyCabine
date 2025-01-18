@@ -8,17 +8,17 @@ if __name__ == "__main__" :
 class Mixer :
     def __init__(self, api):
         self.__api = api
-        import pygame as _pygame
-        self.__pygame = _pygame
-        self.__mixer = _pygame.mixer
-        self.__music = _pygame.mixer.music
-
-        
-        self.__mixer.init(frequency=44100, size=-16, channels=1)
     
     def configure(self):
         global _
         _ = self.__api._
+
+    def post_configure(self):
+        import pygame as _pygame
+        self.__pygame = _pygame
+        self.__mixer = _pygame.mixer
+        self.__music = _pygame.mixer.music
+        self.__mixer.init(frequency=44100, size=-16, channels=1)
 
     def load_music(self, filename, namehint = ""):
         self.__music.load(filename, namehint)
@@ -37,6 +37,9 @@ class Mixer :
     
     def make_sound(self, wave):
         return self.__pygame.sndarray.make_sound(wave)
+    
+    def clean(self):
+        self.__mixer.quit()
 
 def init(api):
     return Mixer(api)

@@ -17,6 +17,8 @@ class Gettext:
         #Importation du module system 'gettext', et 'os'
         import gettext as __gettext
         import os as __os
+        __gettext.bindtextdomain('tools', __os.getenv('WORKDIR') + '/locales')
+        __gettext.textdomain('tools')
         __translation_path = __os.path.realpath(__os.getenv('WORKDIR') + '/locales')
         __t = __gettext.translation(domain, __translation_path)
         self.__gettext[domain] = __t.gettext
@@ -26,6 +28,8 @@ class Gettext:
         Encapsule la fonction de gettext.
         """
         return self.__gettext[domain](message)
+    
+
     
 def init():
     return Gettext()

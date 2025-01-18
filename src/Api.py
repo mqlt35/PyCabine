@@ -27,6 +27,7 @@ class Api:
     #Gestion des domaines pour gettext
     __list_allowed_modules_for_gettext = {}
 
+    __tools_initialized = False
     def __init__(self):
         """
         Initialisation de tous les modules utilisés dans le projet.
@@ -41,6 +42,7 @@ class Api:
         
         # Charger les modules principaux et leurs éléments
         self.__tools = self.__import_all_modules(MODULES["tools"])
+        self.__tools_initialized = True
         self.__mods_projects = self.__import_all_modules(MODULES["projects"])
         self.__scenarios = list(self.__import_all_modules(MODULES["scenarios"]).values())
 
@@ -97,6 +99,17 @@ class Api:
             name = 'Exceptions.' + name_cls_exception
             self.__allow_use_gettext(domain, name)
 
+    def __check_initiated_tools(self):
+        """
+        Vérifie si les outils ont été initialisés.
+        
+        Returns:
+            bool: True si les outils ont été initialisés, False sinon.
+        """
+        if not self.__tools_initialized:
+            raise Exception(self.__("Tools have not been initialized."))
+        return True
+
     def __allow_use_gettext(self, domain_gettext, *names_caller_modules):
         """
         Ajoute un ou plusieurs modules à la liste des modules autorisés pour un domaine gettext donné.
@@ -120,7 +133,11 @@ class Api:
         Returns:
             str: Texte traduit si le module appelant est autorisé, sinon le texte original.
         """
-        __name_caller_module = self.getTools_Utils().GetCallingModule()
+        try:
+            __name_caller_module = self.getTools_Utils().GetCallingModule()
+        except:
+            return message
+        
         for domain, list_names_modules in self.__list_allowed_modules_for_gettext.items():
             if __name_caller_module in list_names_modules : 
                 return self.__gettext._(domain,message)
@@ -145,6 +162,13 @@ class Api:
                 if callable(configure):
                     configure()
     
+    def post_configure(self):
+        for _cls in self.__list_cls_initialized :
+            if hasattr(_cls, 'post_configure'):
+                post_configure = getattr(_cls, 'post_configure')
+                if callable(post_configure):
+                    post_configure()
+    
     # Accesseurs pour les modules principaux  
     def GetCls_Combiner(self):
         return self.__mods_projects['Combinee']
@@ -160,18 +184,34 @@ class Api:
     
     # Accesseurs pour les outils  
     def getTools_Utils(self):
+        if not self.__check_initiated_tools():
+            return None
         return self.__tools['Utils']
     
     def getTools_Check(self):
+        if not self.__check_initiated_tools():
+            return None
         return self.__tools['Check']
     
     def getTools_Argument(self):
+        if not self.__check_initiated_tools():
+            return None
         return self.__tools['Argument']
     
     def getTools_Mixer(self):
+        if not self.__check_initiated_tools():
+            return None
         return self.__tools['Mixer']
         
-    
+    def clean(self):
+        """
+        Arrête le programme proprement.
+        """
+        for _cls in self.__list_cls_initialized :
+            if hasattr(_cls, 'clean'):
+                clean = getattr(_cls, 'clean')
+                if callable(clean):
+                    clean()
     def RunScenario(self,__id_scenario):
         """
         Exécute un scénario sélectionné par son ID.
@@ -194,11 +234,50 @@ class Api:
                 # A commenter lorsque le programme sera lancer en arrière plan
                 #FIXME: Trouver un moyen de quiter le programme proprement à la fin de service
                 # NOTE: Une solution en ajoutant un bouton, celui-ci arrêtra le programme, puis le raspberry?
-                #if(quiterProgramme()):
+                
                 print("Ctrl+C à été déclancher pour mettre un terme au programme.")
                 break
+        self.clean()
 
+    def RunDaemon(self, options):
+        """
+        Exécute le programme en tant que démon.
+        
+        Args:
+            options (Namespace): Options de la ligne de commande.
+        """
+        print("RunDaemon : Lancement du programme en tant que démon.")
+    def Run(self):
+        """
+        Exécute le programme principal.
+        """
+        argument = self.getTools_Argument()
+        options = argument.get_options()
+        if options.command == 'load' or options.command == None:
+            from settings import SCENARIO
+            scenario = SCENARIO
+            if hasattr(options, 'scenario') and options.scenario != None:
+                scenario = options.scenario
+            self.RunScenario(scenario)
+        elif options.command == 'deamon':
+            self.RunDaemon(options)
 
+        
+
+    def generate_options(self):
+        """
+        Génère les options de la ligne de commande.
+        
+        Args:
+            options (dict): Dictionnaire des options à générer.
+        """
+        from options import OPTIONS
+        argument = self.getTools_Argument()
+        for key, value in OPTIONS.items():
+            argument.add_args_sub_parser(key, **value)
+
+        argument.parse_args()
+    
 # Factory pour l'initialisation du projet
 def initialiser_projet():
     """
@@ -209,4 +288,6 @@ def initialiser_projet():
     """
     api = Api()
     api.configure()
+    api.generate_options()
+    api.post_configure()
     return api
