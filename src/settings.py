@@ -12,7 +12,9 @@ MODULES = {
         "Tools.Check",
         "Tools.Mixer",
         "Tools.Argument",
-        # "Tools.Factory"
+        "Tools.Deamon",
+        "Tools.GPIO",
+        "Tools.Pad",
     ],
     "projects": [
         "Cabine.Combinee",

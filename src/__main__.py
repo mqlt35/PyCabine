@@ -1,10 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from Api import initialiser_projet
-
-
-
 def actualise_locales():
     import subprocess
     directory = "/home/julie/Projects/PyCabine/src/locales/fr_FR/LC_MESSAGES/"
@@ -25,14 +21,11 @@ def actualise_locales():
             print("Code de retour : ", e.returncode)
             print("Sortie erreur", e.stderr)
 
-
-
 def main():
+    from Api import initialiser_projet
     app = initialiser_projet()
     app.Run()
     
-
-
 if __name__ == "__main__" :
     try:
         actualise_locales()
@@ -44,4 +37,4 @@ if __name__ == "__main__" :
     except KeyboardInterrupt:
         print("Arrêt du programme demandé.")
     finally:
-        print("Le programme à été arrêté")
+        print("Fin du programme.")

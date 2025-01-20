@@ -61,18 +61,7 @@ class Utils:
             self._path = _path
             self.__api = api
             self.WorkDir = self._initWorkDir()
-            """
-            from Tools.Factory import Factory
-            self.factory = Factory()
-            self._cls_touches = self.factory.getClassCabine("Touches")
-            self._cls_combinee = self.factory.getClassCabine("Combinee")
-            self._cls_argument = self.factory.getTool("Argument")
-
-            self._list_cls_to_clean = ['_cls_touches', '_cls_combinee']
-            """
             
-            # TODO: ajouter des instruction ci-dessous servant à initialiser le projet.
-            print("Utils à été initialisé.")
     def configure(self):
         global _
         _ = self.__api._

@@ -28,6 +28,10 @@ class Api:
     __list_allowed_modules_for_gettext = {}
 
     __tools_initialized = False
+
+    __running = True
+
+    __in_thread = False
     def __init__(self):
         """
         Initialisation de tous les modules utilisés dans le projet.
@@ -168,7 +172,13 @@ class Api:
                 post_configure = getattr(_cls, 'post_configure')
                 if callable(post_configure):
                     post_configure()
-    
+
+    def pre_run(self):
+        for _cls in self.__list_cls_initialized :
+            if hasattr(_cls, 'pre_run'):
+                pre_run = getattr(_cls, 'pre_run')
+                if callable(pre_run):
+                    pre_run() 
     # Accesseurs pour les modules principaux  
     def GetCls_Combiner(self):
         return self.__mods_projects['Combinee']
@@ -202,7 +212,24 @@ class Api:
         if not self.__check_initiated_tools():
             return None
         return self.__tools['Mixer']
+    
+    def getTools_GPIO(self):
+        if not self.__check_initiated_tools():
+            return None
+        return self.__tools['GPIO']
+    
+    def getTools_Pad(self):
+        if not self.__check_initiated_tools():
+            return None
+        return self.__tools['Pad']
+    def getTools_Deamon(self):
+        if not self.__check_initiated_tools():
+            return None
+        return self.__tools['Deamon']   
         
+    def getThread(self):
+        return self.__in_thread
+    
     def clean(self):
         """
         Arrête le programme proprement.
@@ -212,6 +239,8 @@ class Api:
                 clean = getattr(_cls, 'clean')
                 if callable(clean):
                     clean()
+        
+        self.__in_thread = False
     def RunScenario(self,__id_scenario):
         """
         Exécute un scénario sélectionné par son ID.
@@ -219,7 +248,8 @@ class Api:
         Args:
             __id_scenario (int): ID du scénario (à partir de 1).
         """
-        while True:
+        self.pre_run()
+        while self.__running:
             """ 
             TODO:
             //    A terme ce programme et donc se scénario pourra être arrêté par les cas suivant: 
@@ -231,13 +261,18 @@ class Api:
             try:
                 self.__scenarios[__id_scenario - 1].exec()
             except KeyboardInterrupt:
-                # A commenter lorsque le programme sera lancer en arrière plan
-                #FIXME: Trouver un moyen de quiter le programme proprement à la fin de service
-                # NOTE: Une solution en ajoutant un bouton, celui-ci arrêtra le programme, puis le raspberry?
                 
                 print("Ctrl+C à été déclancher pour mettre un terme au programme.")
-                break
+                self.__running = False
         self.clean()
+
+    def StopRunningScenario(self):
+        """
+        Arrête l'exécution du scénario en cours.
+        """
+        self.__running = False
+        self.getTools_Pad().cleanup()
+        
 
     def RunDaemon(self, options):
         """
@@ -246,7 +281,11 @@ class Api:
         Args:
             options (Namespace): Options de la ligne de commande.
         """
-        print("RunDaemon : Lancement du programme en tant que démon.")
+        deamon = self.getTools_Deamon()
+        deamon.set_options(options)
+        deamon.manage_daemon()
+
+
     def Run(self):
         """
         Exécute le programme principal.
@@ -258,6 +297,7 @@ class Api:
             scenario = SCENARIO
             if hasattr(options, 'scenario') and options.scenario != None:
                 scenario = options.scenario
+            self.__in_thread = True
             self.RunScenario(scenario)
         elif options.command == 'deamon':
             self.RunDaemon(options)
@@ -277,6 +317,15 @@ class Api:
             argument.add_args_sub_parser(key, **value)
 
         argument.parse_args()
+
+    def initialise_child(self):
+        """
+        Initialise le processus enfant.
+        """
+        self.__running = True
+        self.__in_thread = True
+        self.configure()
+        self.post_configure()
     
 # Factory pour l'initialisation du projet
 def initialiser_projet():

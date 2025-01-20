@@ -18,6 +18,8 @@ class Mixer :
         self.__pygame = _pygame
         self.__mixer = _pygame.mixer
         self.__music = _pygame.mixer.music
+    
+    def pre_run(self):
         self.__mixer.init(frequency=44100, size=-16, channels=1)
 
     def load_music(self, filename, namehint = ""):

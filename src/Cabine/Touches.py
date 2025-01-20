@@ -6,11 +6,9 @@ if __name__ == "__main__" :
     raise Exception("Ce scripte n'est pas exécutable.")
 
 
-import numpy as np
+
 #import pygame
 import time
-from pad4pi import rpi_gpio
-import RPi.GPIO as GPIO
 
 
 # Initialisation de pygame.mixer
@@ -50,7 +48,7 @@ ROW_PINS = [5, 6, 13, 19]  # Numérotation BCM
 COL_PINS = [16, 20, 21]    # Numérotation BCM
 
 
-
+DURATION = 10.0
 
 # Création d'une classe Touches qui renvoie le numéro de la touche appuyée et qui génère les fréquences associées (biiip)
 class Touches :
@@ -62,17 +60,26 @@ class Touches :
 
 	def configure(self):
 		self.__mixer = self.__api.getTools_Mixer()
-		factory = rpi_gpio.KeypadFactory()
-		self.keypad = factory.create_keypad(keypad=KEYPAD, row_pins=ROW_PINS, col_pins=COL_PINS)
+		self.__pad = self.__api.getTools_Pad()
+
+	def pre_run(self):
+		print("Touches : Initialisation du clavier matriciel : pre_run")
+		# Initialisation du clavier matriciel
+		self.__pad.init_keypad(KEYPAD, ROW_PINS, COL_PINS)
+		self.__dtmf_sounds = {key: self.generate_dtmf(freqs, DURATION) for key, freqs in DTMF_FREQS.items()}
 	# Fonction appelée à chaque pression de touche
 	def handle_key_press(self,key):
 		print(f"Touche appuyée : {key}")
 		self.pressed_button = key
 		self.play_dtmf(key)  # Jouer la note associée à la touche
 
+	def handle_release_key(self, key):
+		print(f"Touche relaché : {key}")
+		self.stop_dtmf(key)
 
     # Générer un son pour une combinaison de fréquences
-	def generate_dtmf(self,frequencies, duration=0.2, sample_rate=44100):
+	def generate_dtmf(self,frequencies, duration=5.0, sample_rate=44100):
+		import numpy as np
 		t = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
 		wave = sum(np.sin(2 * np.pi * f * t) for f in frequencies)
 		wave = (wave * 32767 / np.max(np.abs(wave))).astype(np.int16)  # Normaliser
@@ -82,26 +89,29 @@ class Touches :
 	# Jouer un son pour une touche
 	def play_dtmf(self,key):			    
 		# Associer chaque touche à un son
-		dtmf_sounds = {key: self.generate_dtmf(freqs) for key, freqs in DTMF_FREQS.items()}
-		if key in dtmf_sounds:
-			#print(f"Jouer le son pour la touche : {key}")
-			sound = dtmf_sounds[key]
+		
+		if key in self.__dtmf_sounds:
+			sound = self.__dtmf_sounds[key]
 			sound.play()
-			while self.__mixer.get_busy_mixer():
-				time.sleep(0.05)
+
+	def stop_dtmf(self, key):
+		if key in self.__dtmf_sounds:
+			sound = self.__dtmf_sounds[key]
+			sound.stop()
+
 	def clean(self):
 		#Nettoyage
-		GPIO.cleanup()
+		self.__pad.cleanup()
 		self.__mixer.clean()
 
 	def load(self):
 		if self._load == False:
-			self.keypad.registerKeyPressHandler(self.handle_key_press)	
+			self.__pad.registerKeyPressHandler(self.handle_release_key, self.handle_key_press)
 			self._load = True
 
 	def unload(self):
 		if self._load == True:
-			self.keypad.unregisterKeyPressHandler(self.handle_key_press)
+			self.__pad.unregisterKeyPressHandler(self.handle_release_key, self.handle_key_press)
 			self._load = False
 
 	def getButtonPressed(self):

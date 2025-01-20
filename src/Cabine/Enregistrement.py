@@ -34,8 +34,10 @@ class Enregistrement():
             self.saveMp3File = None
             self.saveWaveFile = None
             self.saveWaveAmplifiedFile = None
-    def configure(self) :
+    def configure(self):
         self.directoryVocalMsg = self.__api.getTools_Utils().getWorkDir() + "/upload/"
+
+    def pre_run(self) :
         self.__combi = self.__api.GetCls_Combiner()
 
     def setFile(self, choice_publication: ChoicePublication = ChoicePublication.INTERNET):

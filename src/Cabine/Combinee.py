@@ -12,14 +12,18 @@ GPIO_PIN_COMBINEE = 17
 
 # Création d'une classe Combinee qui gère l'état du combinée soit il est décorché (1), soit raccroché (0)
 class Combinee :
-    def __init__(self):
-        import RPi.GPIO as GPIO  # bibliothèque pour gérer les GPIO
-        self.__GPIO = GPIO
-        self.__GPIO.setmode(self.__GPIO.BCM)  # mode de numérotation des pins
+    def __init__(self, api):
+        self.__api = api
+        self.__GPIO = None
+        
+
+    def configure(self):
+        self.__GPIO = self.__api.getTools_GPIO()
+    def pre_run(self):
         self.__GPIO.setup(GPIO_PIN_COMBINEE,self.__GPIO.IN)  # pin 17 réglée en input
 
         self._setStateCombi()
-
+    
     # Renvoie l'état sous forme binaire
     def getStateCombi(self): 
         self._setStateCombi()
@@ -37,9 +41,6 @@ class Combinee :
         self._setStateCombi()
         return etat_texte[self.state]
 
-    # nettoye toutes les pins.
-    def clean(self):
-        self.__GPIO.cleanup()
 
     # Fonction interne, récupère l'état du Pin Gpio.
     def _getGpioInput(self):
@@ -53,5 +54,4 @@ class Combinee :
 
 def init(api):
     global _
-    _ = api._
-    return Combinee()
+    return Combinee(api)
