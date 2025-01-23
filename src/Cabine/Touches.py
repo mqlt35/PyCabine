@@ -48,37 +48,40 @@ ROW_PINS = [5, 6, 13, 19]  # Numérotation BCM
 COL_PINS = [16, 20, 21]    # Numérotation BCM
 
 
-DURATION = 10.0
-
 # Création d'une classe Touches qui renvoie le numéro de la touche appuyée et qui génère les fréquences associées (biiip)
 class Touches :
 	def __init__(self, api):
 		# Associer la fonction de gestion des touches au clavier
 		self.__api = api
-		self.pressed_button = None
+		self.pressed_button = False
+		self.select_key = None
 		self._load = False
 
 	def configure(self):
 		self.__mixer = self.__api.getTools_Mixer()
 		self.__pad = self.__api.getTools_Pad()
+		self.__son = self.__api.GetCls_Son()
 
 	def pre_run(self):
 		print("Touches : Initialisation du clavier matriciel : pre_run")
 		# Initialisation du clavier matriciel
 		self.__pad.init_keypad(KEYPAD, ROW_PINS, COL_PINS)
-		self.__dtmf_sounds = {key: self.generate_dtmf(freqs, DURATION) for key, freqs in DTMF_FREQS.items()}
+		self.__dtmf_sounds = {key: self.generate_dtmf(freqs) for key, freqs in DTMF_FREQS.items()}
 	# Fonction appelée à chaque pression de touche
 	def handle_key_press(self,key):
 		print(f"Touche appuyée : {key}")
-		self.pressed_button = key
+		self.__son.stop()
+		self.select_key = key
+		self.pressed_button = True
 		self.play_dtmf(key)  # Jouer la note associée à la touche
 
 	def handle_release_key(self, key):
 		print(f"Touche relaché : {key}")
+		self.pressed_button = False
 		self.stop_dtmf(key)
 
     # Générer un son pour une combinaison de fréquences
-	def generate_dtmf(self,frequencies, duration=5.0, sample_rate=44100):
+	def generate_dtmf(self,frequencies, duration=1.0, sample_rate=44100):
 		import numpy as np
 		t = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
 		wave = sum(np.sin(2 * np.pi * f * t) for f in frequencies)
@@ -92,7 +95,7 @@ class Touches :
 		
 		if key in self.__dtmf_sounds:
 			sound = self.__dtmf_sounds[key]
-			sound.play()
+			sound.play(-1)
 
 	def stop_dtmf(self, key):
 		if key in self.__dtmf_sounds:
@@ -114,13 +117,20 @@ class Touches :
 			self.__pad.unregisterKeyPressHandler(self.handle_release_key, self.handle_key_press)
 			self._load = False
 
-	def getButtonPressed(self):
+	def getSelectedKey(self):
 		if not self._load:
 			raise Exception("Touches.py : Les touches du clavier doivent être d'abord Charger.")
 		
-		save_pressed_button = self.pressed_button
-		self.pressed_button = None
-		return save_pressed_button 
+		select_key = self.select_key
+		self.select_key = None
+		return select_key 
+	def getButtonPressed(self):
+		return self.pressed_button
+
+	def wait_is_button_pressed(self):
+		import time
+		while self.pressed_button:
+			time.sleep(0.5)
 
 def init(api):
     global _

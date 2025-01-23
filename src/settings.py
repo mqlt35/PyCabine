@@ -1,5 +1,6 @@
 # settings.py
 SCENARIO = 1
+NAME_SERVICE = "cabine"
 
 MODULES = {
     "scenarios": [
@@ -15,6 +16,7 @@ MODULES = {
         "Tools.Deamon",
         "Tools.GPIO",
         "Tools.Pad",
+        "Tools.Service",
     ],
     "projects": [
         "Cabine.Combinee",

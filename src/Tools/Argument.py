@@ -41,8 +41,18 @@ class Argument():
     def add_args_sub_parser(self, names, **options):
       
         sub_parser = self.sub_parser.add_parser(names, help=options["help"])
-        for command in options["commands"]:
-            sub_parser.add_argument(*command["names"], **command["parameters"])
+        if "commands" in options : 
+            for command in options["commands"]:
+                sub_parser.add_argument(*command["names"], **command["parameters"])
+        if "groupes" in options:
+                required = False
+                if 'required' in options['groupes']:
+                    required = options['groupes']['required']
+                commands = options['groupes']['commands']
+                groupe =sub_parser.add_mutually_exclusive_group(required=required)
+                for command in commands : 
+                    groupe.add_argument(*command["names"], **command["parameters"])
+                
 
     def get_options(self):
         return self.args

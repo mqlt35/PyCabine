@@ -19,14 +19,11 @@ class Deamon:
 
     def set_options(self, options):
         self.__pid_file = options.pidfile
-        self.__status_file = options.statusfile
         self.__scenario = options.scenario
         self.__action = options.action
 
     def start_daemon(self):
         """Start the daemon."""
-        print("Starting daemon...")
-
         if self.__os.path.exists(self.__pid_file):
             print("Daemon already running. Use restart or stop first.")
             self.__sys.exit(1)
@@ -44,9 +41,11 @@ class Deamon:
         self.__os.umask(0)
         self.__sys.stdout.flush()
         self.__sys.stderr.flush()
+        print("Starting daemon...")
         with open("/dev/null", "w") as devnull:
             self.__os.dup2(devnull.fileno(), self.__sys.stdin.fileno())
         
+        print("Youhou")
         with open(self.__log, "w") as log:    
             self.__os.dup2(log.fileno(), self.__sys.stdout.fileno())
             self.__os.dup2(log.fileno(), self.__sys.stderr.fileno())
@@ -75,7 +74,9 @@ class Deamon:
 
         with open(self.__pid_file, 'r') as pid_file:
             pid = int(pid_file.read().strip())
-
+        
+        #self.__os.kill(pid, self.__signal.SIGTERM)
+    
         try:
             self.__os.kill(pid, self.__signal.SIGTERM)
             print("Daemon stopped.")
@@ -85,6 +86,8 @@ class Deamon:
             print(f"Error stopping daemon: {e}")
         finally:
             self.cleanup()
+
+        
 
     def restart_daemon(self):
         """Restart the daemon."""

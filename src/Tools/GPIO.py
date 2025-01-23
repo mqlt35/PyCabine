@@ -5,6 +5,7 @@
 if __name__ == "__main__" : 
     raise Exception("Ce scripte n'est pas exécutable.")
 
+LED_GREN = 4
 
 class GPIO:
     def __init__(self, api):
@@ -15,7 +16,14 @@ class GPIO:
 
     def pre_run(self):
         self.__GPIO.setmode(self.__GPIO.BCM)
+        self.runLed()
+        
+    def runLed(self):
+        self.setup(LED_GREN, self.__GPIO.OUT) #Active le contrôle du GPIO
+        state = self.input(LED_GREN) #Lit l'état actuel du GPIO, vrai si allumé, faux si éteint
 
+        if not state : #Si GPIO allumé
+            self.output(LED_GREN, self.__GPIO.HIGH) #On l'allume
     def setup(self, pin, mode, **args):
         self.__GPIO.setup(pin, mode, **args)
 

@@ -57,8 +57,9 @@ class Utils:
             self._initialized = True
             super().__init__(*args, **kwargs)
             # J'ai juste besoin du module PATH
-            from os import path as _path
-            self._path = _path
+            import os as _os
+            self.__os = _os
+            self.__path = _os.path
             self.__api = api
             self.WorkDir = self._initWorkDir()
             
@@ -71,7 +72,7 @@ class Utils:
             Méthode privée afin de définire le répertoire principale de travail du Projet PyCabine.
             Pour cela cette méthode doit être lancée au scripte principal et évité tout problème
         """
-        return self._path.realpath(self._path.dirname(__file__) + "/../..")
+        return self.__path.realpath(self.__path.dirname(__file__) + "/../..")
 
     """
     =====================================================================================================================
@@ -158,6 +159,35 @@ class Utils:
             print(without_ext)
         return basename
 
+    def def_tmpFile_gpio(self):
+        import glob
+        # Chemin avec motif
+        motif = "/tmp/.lgd-nfy*"
+
+        # Trouver les fichiers correspondant au motif
+        fichiers = glob.glob(motif)
+        for fichier in fichiers:
+            self.del_file(fichier)
+            
+    def file_exists(self, file):
+        return self.__path.isfile(file)
+    
+    def copy_file(self, source, target):
+        import shutil
+        shutil.copy2(source, target)
+    def del_file(self, file):
+
+        fichier_a_supprimer = file
+
+        try:
+            self.__os.remove(fichier_a_supprimer)
+            print(f"Le fichier '{fichier_a_supprimer}' a été supprimé avec succès.")
+        except FileNotFoundError:
+            print(f"Le fichier '{fichier_a_supprimer}' n'existe pas.")
+        except PermissionError:
+            print(f"Vous n'avez pas la permission de supprimer '{fichier_a_supprimer}'.")
+        except Exception as e:
+            print(f"Une erreur s'est produite : {e}")
 """
 =====================================================================================================================
 ====                                                                                                             ====

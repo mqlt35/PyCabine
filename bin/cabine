@@ -160,7 +160,7 @@ demo() {
     export LG_WD=/tmp
 
     #LANG=fr_FR.UTF-8  
-    "$PYTHON" "${WORKDIR}" ${ARGV}
+    "$PYTHON" -u "${WORKDIR}" ${ARGV}
 
 }
 

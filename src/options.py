@@ -2,7 +2,7 @@
 from settings import SCENARIO
 
 OPTIONS = {
-    "deamon" : {
+    "daemon" : {
         "help"       :   "Gère le programme comme un daemon.",
         "commands" : [
             {
@@ -17,16 +17,8 @@ OPTIONS = {
                 "names" : ["-p", "--pidfile"],
                 "parameters" : {
                     "type" : str,
-                    "help" : "Chemin du fichier PID (par défaut : /var/run/cabine/file.pid)",
-                    "default" : "/var/run/cabine/file.pid"
-                }
-            },
-            {
-                "names" : ["--statusfile"],
-                "parameters" : {
-                    "type" : str,
-                    "help" : "Chemin du fichier de statut (par défaut : /var/run/cabine/file.status)",
-                    "default" : "/var/run/cabine/file.status"
+                    "help" : "Chemin du fichier PID (par défaut : /run/cabine/file.pid)",
+                    "default" : "/run/cabine/file.pid"
                 }
             },
             {
@@ -40,6 +32,35 @@ OPTIONS = {
             }
         ],
         
+    },
+    "service" : {
+        "help"      : "Gère la mise en place du programme avec systemd.",
+        "groupes" : {
+            "required" : True,
+            "commands" : [
+                {
+                    "names" : ["-i", "--install"],
+                    "parameters" : {
+                        "action" : "store_true",
+                        "help" : f"Installe le service et l'active",
+                    }
+                },
+                {
+                    "names" : ["-u", "--uninstall"],
+                    "parameters" : {
+                        "action" : "store_true",
+                        "help" : f"Supprime le service.",
+                    }
+                },
+                {
+                    "names" : ["-r", "--reinstall"],
+                    "parameters" : {
+                        "action" : "store_true",
+                        "help" : f"Réinstalle le service.",
+                    }
+                }
+            ]
+        }
     },
     "load" : {
         "help"       :   "Démarre le programme.",

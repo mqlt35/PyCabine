@@ -31,12 +31,12 @@ class Api:
 
     __running = True
 
-    __in_thread = False
     def __init__(self):
         """
         Initialisation de tous les modules utilisés dans le projet.
         """
         # Initialisation de gettext
+        import os
         self.__gettext = Gettext.init()
         for domain in ['cabine', 'tools', 'error']:
             self.__gettext.InitGettext(domain)
@@ -222,13 +222,17 @@ class Api:
         if not self.__check_initiated_tools():
             return None
         return self.__tools['Pad']
+    
     def getTools_Deamon(self):
         if not self.__check_initiated_tools():
             return None
-        return self.__tools['Deamon']   
+        return self.__tools['Deamon']  
+     
+    def getTools_Service(self):
+        if not self.__check_initiated_tools():
+            return None
+        return self.__tools['Service'] 
         
-    def getThread(self):
-        return self.__in_thread
     
     def clean(self):
         """
@@ -240,7 +244,6 @@ class Api:
                 if callable(clean):
                     clean()
         
-        self.__in_thread = False
     def RunScenario(self,__id_scenario):
         """
         Exécute un scénario sélectionné par son ID.
@@ -281,10 +284,21 @@ class Api:
         Args:
             options (Namespace): Options de la ligne de commande.
         """
-        deamon = self.getTools_Deamon()
-        deamon.set_options(options)
-        deamon.manage_daemon()
+        daemon = self.getTools_Deamon()
+        daemon.set_options(options)
+        daemon.manage_daemon()
 
+
+    def RunService(self, options):
+        """
+        Gère l'installation du service, ainsi que sa maintenance.
+
+        Args:
+            options (Namespace): Options de la ligne de commande.
+        """
+        service = self.getTools_Service()
+        service.set_options(options)
+        service.process()
 
     def Run(self):
         """
@@ -297,10 +311,14 @@ class Api:
             scenario = SCENARIO
             if hasattr(options, 'scenario') and options.scenario != None:
                 scenario = options.scenario
-            self.__in_thread = True
             self.RunScenario(scenario)
-        elif options.command == 'deamon':
+        elif options.command == 'daemon':
             self.RunDaemon(options)
+        elif options.command == 'service':
+            self.RunService(options)
+
+        #Je supprime le fichier qui gère GPIO.
+        self.getTools_Utils().def_tmpFile_gpio()
 
         
 
@@ -323,7 +341,6 @@ class Api:
         Initialise le processus enfant.
         """
         self.__running = True
-        self.__in_thread = True
         self.configure()
         self.post_configure()
     

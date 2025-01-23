@@ -61,10 +61,11 @@ class Scenario1() :
             sleep(2)
             self.sendWelcomeAnnounceAndChoicePublication()
         elif self.state == State.CHOICE_PUBLICATION_OK:
+            self.__touches.wait_is_button_pressed()
+            self.__touches.unload()
             self.__enregistrement.setFile(self.choice_publication)
             self.__son.play(self.__son.ANNONCE_ENREGISTREMENT)
             self.__son.wait()
-            self.__touches.unload()
             self.__enregistrement.saveVocalMsg()
 
             # Le choix de publication à été fait, on peut poursuivre.
@@ -106,23 +107,26 @@ class Scenario1() :
                 # s'assurer que le son est arrêté
                 # puis définir le choix de publication
                 # traiter les erreurs si mauvaise touche appuyer, puis recommencer.
-                touche = self.__touches.getButtonPressed()
+                touche = self.__touches.getSelectedKey()
                 if self.__combi.combiRaccrocher():
                     # Cas 1 : Le téléphone est raccrocher.
                     self.__son.stop()
                     self.state = State.RACCROCHER #On reprend à 0
                     print("Choix publication : Téléphone raccrocher.")
                     break
-                elif not self.__son.get_busy():
+                elif not self.__son.get_busy() and not self.__touches.getButtonPressed():
                     # Le son est finis alors je lance à nouveau la demande pour faire un choix
                     print("Choix publication : Le délai est dépassé.")
+                    self.__touches.wait_is_button_pressed()
                     self.__son.play(self.__son.ERROR_UNKNOW_CHOICE_PUBLICATION)
                 elif touche in CHOICE_PUBLICATION_ACCEPTED :
+                    self.__touches.wait_is_button_pressed()
                     self.choice_publication = self.__enregistrement.ChoicePublication(touche)
                     self.__son.stop()
                     self.state = State.CHOICE_PUBLICATION_OK
                     print("Choix publication : un choix à été fait.")
                 elif touche != None and not touche in CHOICE_PUBLICATION_ACCEPTED :
+                    self.__touches.wait_is_button_pressed()
                     # Mauvais choix, je lance à nouveau la demande.
                     print("Choix publication : Mauvais Choix.")
                     self.__son.play(self.__son.ERROR_CHOICE_PUBLICATION)
