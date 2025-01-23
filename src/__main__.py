@@ -1,61 +1,40 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Constante afin de savoir quelle scénario lancé
-from Tools import Utils
-
-SCENARIO = 1
-Debug = True
-Path = "s"
-"""
-Ce fichier ne s'occupe que de lancer le scénario sur lequel je travail.
-
-Scénario 1 - témoignage simple
-Scénario 2 - témoignage avec possibilité de réécoute et de modification
-Scénario 3 - témoignage avec choix thématiques
-"""
-
-def erreur():
-    print("Une erreur c'est produite pendant l'initialisation de l'un des 3 scénaris")
-
-def quiterProgramme() :
-    while True :
-        value = input("\n(q to quit or enter to continue) > ")
-        if value == "q":
-            print("Bye")
-            return True
-        elif value == "":
-            print("\n")
-            return False
-
+def actualise_locales():
+    import subprocess
+    directory = "/home/julie/Projects/PyCabine/src/locales/fr_FR/LC_MESSAGES/"
     
+    for file in (['tools', 'cabine', 'error']) :
+        #  msgfmt -o tools.mo tools.po
+        cmd = ['msgfmt', '-o', directory + file + '.mo', directory + file + '.po']
+
+        try:
+            subprocess.run(
+                cmd,
+                check=True,
+                capture_output=True,
+                text=True
+            )
+        except subprocess.CalledProcessError as e:
+            print("Erreur détectée :", e)
+            print("Code de retour : ", e.returncode)
+            print("Sortie erreur", e.stderr)
+
 def main():
-    #Switch qui décide quelle scénario lancé.
-    match SCENARIO:
-        case 1:
-            from Cabine.Scenarios import Scenario1 as Scenario
-        case 2:
-            from Cabine.Scenarios import Scenario2 as Scenario
-        case 3:
-            from Cabine.Scenarios import Scenario3 as Scenario
+    from Api import initialiser_projet
+    app = initialiser_projet()
+    app.Run()
     
-    while True :
-        Scenario.lancement(Scenario)
-
-        # A commenter lorsque le programme sera lancer en arrière plan
-        #FIXME: Trouver un moyen de quiter le programme proprement à la fin de service
-        # NOTE: Une solution en ajoutant un bouton, celui-ci arrêtra le programme, puis le raspberry?
-        #if(quiterProgramme()):
-        #    break
-
 if __name__ == "__main__" :
-    Utils.init()
-    #print(Utils.baseName.__doc__)
-    #print(L("HelloWorld"))
-    #exit()
-    #TODO Test de la classe Langue, le but est de renvoyer un texte
     try:
+        actualise_locales()
         main()
+    except Exception as e:
+        print("Une erreur est survenue : ")
+        raise e
+
     except KeyboardInterrupt:
-        print("Fin du programme")
-        Utils.Clean()
+        print("Arrêt du programme demandé.")
+    finally:
+        print("Fin du programme.")

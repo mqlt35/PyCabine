@@ -1,0 +1,24 @@
+msgid  ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"PO-Revision-Date: 2024-12-22 01:13+0100\n"
+"Last-Translator:  <julie@raspberrypi>\n"
+"Language-Team: French <traduc@traduc.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "Hello World!"
+msgstr "Bonjour le monde"
+
+#msgid  ""
+#msgstr ""
+
+#-------------------------- Module : Cabine/Scenarios/Scenario1 ------------------------------------------
+
+msgid  "The phone is already off the hook, waiting for him to hang up."
+msgstr "Le téléphone est déjà décrocher, en attente pour qu'il soit raccrocher."
+
+# --------------------------------------------------------------------------------------------------------

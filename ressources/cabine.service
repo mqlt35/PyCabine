@@ -1,16 +1,23 @@
 [Unit]
-Description=cabine system daemon
-After=network.target
+Description=Cabine system daemon
+After=sound.target pipewire.service pipewire-pulse.service
+Wants=sound.target pipewire.service pipewire-pulse.service
 
 [Service]
 Type=simple
-User=debian
-Group=debian
-
-ExecStart=/usr/bin/cabine start
-ExecStop=/usr/bin/cabine stop
+User=julie
+Group=julie
+ExecStart=/usr/bin/cabine daemon start
+ExecStop=/usr/bin/cabine daemon stop
 Restart=on-failure
-RestartSec=3
+RestartSec=5
+RemainAfterExit=true
+#PrivateDevices=no
+#Environment="SDL_AUDIODRIVER=alsa"
+# Ensure proper PulseAudio access
+Environment="XDG_RUNTIME_DIR=/run/user/1000" 
+RuntimeDirectory=cabine
+RuntimeDirectoryMode=0755
 
 [Install]
 WantedBy=multi-user.target

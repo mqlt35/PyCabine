@@ -6,36 +6,42 @@ if __name__ == "__main__" :
     raise Exception("Ce scripte n'est pas exécutable.")
 
 from enum import Enum
-import datetime
 
-TAUX_ECHANTILLONNAGE = 44100
-class ChoicePublication(Enum):
-    INTERNET = 1
-    PRIVER = 2
+
+
+
 
 class Enregistrement():    
     # Attribut de classe pour stocker l'unique instance
     _instance = None
-
-    def __new__(self, *args, **kwargs):
+    
+    TAUX_ECHANTILLONNAGE = 44100
+    class ChoicePublication(Enum):
+        INTERNET = 1
+        PRIVER = 2
+    
+    def __new__(self, _, *args, **kwargs):
         # Vérifie si une instance existe déjà
         # merci Chat GPT
         if not self._instance:
             self._instance = super(Enregistrement, self).__new__(self, *args, **kwargs)
             pass
         return self._instance
-    def __init__(self): # A initialiser qu'une seule fois.
+    def __init__(self, api): # A initialiser qu'une seule fois.
         if not hasattr(self, "_initialized"):
-            from Tools import Utils
-            from Tools import Factory
             self._initialized = True
-            self.directoryVocalMsg = Utils.getWorkDir() + "/upload/"
+            self.__api = api
             self.saveMp3File = None
             self.saveWaveFile = None
             self.saveWaveAmplifiedFile = None
-            self.Combi = Factory().getClass("Combinee")
+    def configure(self):
+        self.directoryVocalMsg = self.__api.getTools_Utils().getWorkDir() + "/upload/"
+
+    def pre_run(self) :
+        self.__combi = self.__api.GetCls_Combiner()
 
     def setFile(self, choice_publication: ChoicePublication = ChoicePublication.INTERNET):
+        import datetime
         curent_time = datetime.datetime.now()
         tab_save_file = [
             self.directoryVocalMsg,
@@ -61,24 +67,24 @@ class Enregistrement():
             with wave.open(self.saveWaveFile, 'wb') as fichier_wave:
                 fichier_wave.setnchannels(1)
                 fichier_wave.setsampwidth(2)
-                fichier_wave.setframerate(TAUX_ECHANTILLONNAGE)
+                fichier_wave.setframerate(self.TAUX_ECHANTILLONNAGE)
                 # Démarrage de l'enregistrement en streaming
                 def callback(indata, frames, time, status):
                     if status:
                         print(f"Statut : {status}")
                     #audio.append(indata.copy())
                     fichier_wave.writeframes(indata.tobytes())
-                #print(self.Combi)
+                #print(self.__combi)
                 with sd.InputStream(
-                    samplerate=TAUX_ECHANTILLONNAGE,
+                    samplerate=self.TAUX_ECHANTILLONNAGE,
                     channels=1,
                     dtype='int16',
                     callback=callback
                 ):
                     while True:
                         sleep(0.1) # en prévention surchage CPU.
-                        #print(self.Combi)
-                        if self.Combi.combiRaccrocher():
+                        #print(self.__combi)
+                        if self.__combi.combiRaccrocher():
                             break
                     #while GPIO.input(HOOK_PIN) == GPIO.HIGH:
                     #    time.sleep(0.1)
@@ -162,15 +168,8 @@ class Enregistrement():
             print(f"Permission refusée : {self.saveWaveAmplifiedFile} : {e}")
         except Exception as e:
             print(f"Un erreur est survenue : {e}")
-
-    def __getattr__(self, name):
-        if name == "ChoicePublication":
-            return ChoicePublication
-        elif name == "_initialized":
-            # Sans déclancher cette erreur et en retournant None
-            # hasattr dans __init__ pète les plomb.
-            raise AttributeError("L'arguement existe pas.")
-        # Intercepte les attributs inexistantsy
-        print(f"__getattr__ appelé pour : {name}")
     
-        return None
+def init(api):
+    global _
+    _ = api._
+    return Enregistrement(api)
