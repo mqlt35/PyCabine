@@ -32,7 +32,10 @@ class Service:
 
     def configure(self):
         self.__directory_ressources = self.__api.getTools_Utils().getWorkDir() + "/ressources/"
+        #self.__content_service_file = self.genere_service()
 
+    def genere_service(self):
+        pass
     def set_options(self, options):
         if (options.install) : 
             self.__mode = INSTALL
