@@ -3,8 +3,9 @@
 
 def actualise_locales():
     import subprocess
-    directory = "/home/julie/Projects/PyCabine/src/locales/fr_FR/LC_MESSAGES/"
-    
+    import os
+    directory =  os.path.realpath(os.path.dirname(__file__) + "/..") + "/src/locales/fr_FR/LC_MESSAGES/"
+   
     for file in (['tools', 'cabine', 'error']) :
         #  msgfmt -o tools.mo tools.po
         cmd = ['msgfmt', '-o', directory + file + '.mo', directory + file + '.po']
@@ -20,6 +21,7 @@ def actualise_locales():
             print("Erreur détectée :", e)
             print("Code de retour : ", e.returncode)
             print("Sortie erreur", e.stderr)
+    exit()
 
 def main():
     from Api import initialiser_projet
