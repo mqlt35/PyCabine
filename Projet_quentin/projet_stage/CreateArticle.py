@@ -170,7 +170,6 @@ def create_post(audio_filename, image_filename=None, categorie=None):
         
         <div class="divider"></div>
         
-        <div class="author-name">Quentin</div>
     </div>
     """
     
