@@ -156,7 +156,7 @@ def create_post(audio_filename, image_filename=None, categorie=None):
     <div class="testimonial-container">
         <div class="testimonial-header">
             <a href="{site_url}/?p=%post_id%" class="testimonial-title-link">
-                <h1>Témoignage du {formatted_date}</h1>
+                <h1>{formatted_date}</h1>
             </a>
         </div>
         
@@ -298,3 +298,4 @@ def process_files():
 
 if __name__ == "__main__":
     process_files()
+
