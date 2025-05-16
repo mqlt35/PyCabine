@@ -189,6 +189,21 @@ class Utils:
         except Exception as e:
             print(f"Une erreur s'est produite : {e}")
 
+    def call_process(self, command: str):
+        """
+        Méthode pour exécuter une commande système.
+        """
+        import subprocess
+        try:
+            result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            return result.stdout.decode('utf-8')
+        except subprocess.CalledProcessError as e:
+            print(f"Erreur lors de l'exécution de la commande : {e}")
+            return None
+        except Exception as e:
+            print(f"Une erreur s'est produite : {e}")
+            return None
+
     def set_environment(self, name: str, value: str):
         """
         Méthode pour définir une variable d'environnement.
