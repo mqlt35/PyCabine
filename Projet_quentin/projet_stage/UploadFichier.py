@@ -80,11 +80,11 @@ if __name__ == "__main__":
 				private_path = os.path.join(private_dir, wav_file)
 				shutil.copy2(file_path, private_path)
 				
-				# Supprimer l'original
-				os.remove(file_path)
 			except Exception as e:
 				print(f"Erreur lors du traitement du fichier {wav_file}: {str(e)}")
 			continue
+		# Supprimer l'original
+		os.remove(file_path)
 		
 		# Pour les autres fichiers, procéder à l'upload dans le WordPress
 		result = upload_file_to_wordpress(file_path, WORDPRESS_URL, USERNAME, PASSWORD)
