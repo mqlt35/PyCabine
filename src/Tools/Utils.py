@@ -188,6 +188,24 @@ class Utils:
             print(f"Vous n'avez pas la permission de supprimer '{fichier_a_supprimer}'.")
         except Exception as e:
             print(f"Une erreur s'est produite : {e}")
+
+    def set_environment(self, name: str, value: str):
+        """
+        Méthode pour définir une variable d'environnement.
+        """
+        if value is None or value == "":
+            raise AttributeError(self.__api, "Utils.set_env", _("The value of the environment variable cannot be None or empty."))
+        
+        if not isinstance(name, str):
+            raise AttributeError(self.__api, "Utils.set_env", _("The name of the environment variable must be a string."))
+        if not isinstance(value, str):
+            raise AttributeError(self.__api, "Utils.set_env", _("The value of the environment variable must be a string."))
+        # Vérifie si la variable d'environnement existe déjà
+        if name in self.__os.environ:
+            # Si elle existes, on affiche un message d'avertissement
+            print(f"Avertissement : La variable d'environnement '{name}' existe déjà et sera remplacée.")
+        # Définit la variable d'environnement
+        self.__os.environ[name] = value
 """
 =====================================================================================================================
 ====                                                                                                             ====

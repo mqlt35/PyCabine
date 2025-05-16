@@ -3,6 +3,7 @@ tests/generaluser-gs-main/
 
 # Fichier/Dossier à ignorer générer par  Julie
 .vscode
+.venv
 __pycache__
 tests/combiné.wav
 venv/
