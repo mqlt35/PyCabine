@@ -9,4 +9,6 @@ tests/combiné.wav
 venv/
 
 # Ignioer les Enregistrement vocaux
-upload/*.mp3
+upload/
+**/backup/
+**/log/

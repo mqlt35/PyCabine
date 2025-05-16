@@ -111,6 +111,7 @@ class Enregistrement():
         finally:
             print("saveVocalMsg : Fin de l'enregistrement.")
             self.amplify_if_needed()
+            self.converteWaveToMp3()
 
 
     def analyse_volume(self, file_path):
@@ -178,6 +179,8 @@ class Enregistrement():
         from pydub import AudioSegment
         try:
             audio = AudioSegment.from_wav(self.saveWaveAmplifiedFile)
+            audio = audio.set_sample_width(2)  # passe à 16-bit
+            print(audio.frame_rate, audio.channels, audio.sample_width)
             audio.export(self.saveMp3File, format='mp3')
         except Exception as e:
             print(f"Erreur pendant la conversion wav --> mp3 : {e}")
@@ -200,16 +203,17 @@ class Enregistrement():
         except Exception as e:
             print(f"Un erreur est survenue : {e}")
 
-        file_path = Path(self.saveWaveAmplifiedFile)
-        try:
-            file_path.unlink()
-            print(f"Le fichier {self.saveWaveAmplifiedFile} à bien été supprimé.")
-        except FileNotFoundError as e: 
-            print(f"{self.saveWaveAmplifiedFile} : n'existe pas. : {e}")
-        except PermissionError as e:
-            print(f"Permission refusée : {self.saveWaveAmplifiedFile} : {e}")
-        except Exception as e:
-            print(f"Un erreur est survenue : {e}")
+        if self.saveWaveAmplifiedFile != self.saveWaveFile:
+            file_path = Path(self.saveWaveAmplifiedFile)
+            try:
+                file_path.unlink()
+                print(f"Le fichier {self.saveWaveAmplifiedFile} à bien été supprimé.")
+            except FileNotFoundError as e: 
+                print(f"{self.saveWaveAmplifiedFile} : n'existe pas. : {e}")
+            except PermissionError as e:
+                print(f"Permission refusée : {self.saveWaveAmplifiedFile} : {e}")
+            except Exception as e:
+                print(f"Un erreur est survenue : {e}")
     
 def init(api):
     global _
