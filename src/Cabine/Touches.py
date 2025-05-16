@@ -28,24 +28,37 @@ DTMF_FREQS = {
     "*": (941, 1209),
     0: (941, 1336),
     "#": (941, 1477),
+	'livre': (697, 1633),
+	'mem': (770, 1633),
+	'vol+': (852, 1633),
+	'vol-': (941, 1633),
+	'drap.': (697, 1779),
+	'vert': (770, 1779),
+	'bis': (852, 1779),
+	'null': (941, 1779),
+	'racc.': (697, 1847),
 }
 
 # Configuration du clavier matriciel
 KEYPAD = [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9],
-    ["*", 0, "#"]
+    [1, 2, 3, 'livre', 'drap.'],
+    [4, 5, 6, 'mem', 'vert'],
+    [7, 8, 9, 'vol+', 'bis'],
+    ["*", 0, "#", 'vol-', 'null'],
+	['null', 'null', 'null', 'null', 'racc.'],
 ]
 
 NAME_KEYPAD = {
 	1 : KEYPAD[0][0], 4 : KEYPAD[1][0], 7 : KEYPAD[2][0], "*" : KEYPAD[3][0],
 	2 : KEYPAD[0][1], 5 : KEYPAD[1][1], 8 : KEYPAD[2][1],  0  : KEYPAD[3][1],
-	3 : KEYPAD[0][2], 6 : KEYPAD[1][2], 9 : KEYPAD[2][2], "#" : KEYPAD[3][2]
+	3 : KEYPAD[0][2], 6 : KEYPAD[1][2], 9 : KEYPAD[2][2], "#" : KEYPAD[3][2],
+	'livre' : KEYPAD[0][3], 'mem' : KEYPAD[1][3], 'vol+' : KEYPAD[2][3], 'vol-' : KEYPAD[3][3],
+	'drap.' : KEYPAD[0][4], 'vert' : KEYPAD[1][4], 'bis' : KEYPAD[2][4], 'null' : KEYPAD[3][4],
+	'null' : KEYPAD[4][0], 'null' : KEYPAD[4][1], 'null' : KEYPAD[4][2], 'null' : KEYPAD[4][3], 'racc.' : KEYPAD[4][4],
 }
 
-ROW_PINS = [5, 6, 13, 19]  # Numérotation BCM
-COL_PINS = [16, 20, 21]    # Numérotation BCM
+ROW_PINS = [5, 	6, 	13,  4, 26]  # Numérotation BCM
+COL_PINS = [22, 21, 27, 23, 24]    # Numérotation BCM
 
 
 # Création d'une classe Touches qui renvoie le numéro de la touche appuyée et qui génère les fréquences associées (biiip)
