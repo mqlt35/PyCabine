@@ -1,100 +1,116 @@
-import requests
-from requests.auth import HTTPBasicAuth
 import os
+import sys
 import shutil
+from datetime import datetime
+import smbc
 
-def upload_file_to_wordpress(file_path, wordpress_url, username, password):
-	# VÉRIFICATION DE L'EXISTENCE DU FICHIER
-	if not os.path.isfile(file_path):
-		print(f"Erreur: Le fichier {file_path} n'existe pas.")
-		return None
+# Configuration des chemins ABSOLUS
+if getattr(sys, 'frozen', False):
+    SCRIPT_DIR = os.path.dirname(sys.executable)
+else:
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-	# Construction de l'URL de l'API WordPress pour les médias
-	api_url = f"{wordpress_url}/wp-json/wp/v2/media"
-	
-	try:
-		# ENVOI DU FICHIER VERS WORDPRESS
-		with open(file_path, 'rb') as file:
-			response = requests.post(
-				api_url,
-				auth=HTTPBasicAuth(username, password),
-				files={'file': (os.path.basename(file_path), file)},
-				headers={'Content-Disposition': f'attachment; filename={os.path.basename(file_path)}'},
-				verify=False
-			)
-		
-		# TRAITEMENT DE LA RÉPONSE
-		if response.status_code == 201:
-			print(f"Fichier {os.path.basename(file_path)} envoyé avec succès!")
-			return response.json()
-		else:
-			print(f"Erreur lors de l'envoi du fichier {os.path.basename(file_path)}. Code: {response.status_code}")
-			print(f"Message d'erreur: {response.text}")
-			return None
-			
-	except Exception as e:
-		print(f"Une erreur s'est produite avec {os.path.basename(file_path)}: {str(e)}")
-		return None
+# Configuration
+CONFIG = {
+    'NAS': {
+        'IP': "192.168.20.96",
+        'SHARE': "cabine",
+        'USERNAME': "rpi",
+        'PASSWORD': "Latouche35",
+        'REMOTE_PATH': "audio_sauvegarde"
+    },
+    'PATHS': {
+        'AUDIO': os.path.join(SCRIPT_DIR, "audio"),
+        'BACKUP': os.path.join(SCRIPT_DIR, "backup"),
+        'PRIVE': os.path.join(SCRIPT_DIR, "privé")
+    }
+}
+
+def init_dirs():
+    """Crée les répertoires nécessaires"""
+    for dir_key in ['AUDIO', 'BACKUP', 'PRIVE']:
+        os.makedirs(CONFIG['PATHS'][dir_key], exist_ok=True)
+
+def log(message):
+    """Journalisation des opérations"""
+    print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {message}")
+
+def upload_to_nas(file_path):
+    """Transfert vers le NAS via SMB (python3-smbc)"""
+    try:
+        # Configuration du contexte SMB
+        ctx = smbc.Context()
+        ctx.optionNoAutoAnonymousLogin = True
+        ctx.optionUseKerberos = False
+
+        # Authentification
+        auth_data = f"{CONFIG['NAS']['USERNAME']}:{CONFIG['NAS']['PASSWORD']}@{CONFIG['NAS']['IP']}"
+        remote_dir = f"smb://{auth_data}/{CONFIG['NAS']['SHARE']}/{CONFIG['NAS']['REMOTE_PATH']}/"
+        remote_path = f"{remote_dir}{os.path.basename(file_path)}"
+
+        # Tentative de création du dossier
+        try:
+            ctx.mkdir(remote_dir)
+        except:
+            pass
+
+        # Transfert du fichier
+        with open(file_path, 'rb') as local_file:
+            fd = ctx.open(remote_path, os.O_WRONLY | os.O_CREAT)
+            fd.write(local_file.read())
+            fd.close()
+
+        log(f"NAS: Transfert réussi - {os.path.basename(file_path)}")
+        return True
+
+    except Exception as e:
+        log(f"ERREUR NAS: {str(e)}")
+        return False
+
+def transfer_file(file_path):
+    """Gère la copie de sauvegarde et le transfert NAS"""
+    filename = os.path.basename(file_path)
+    
+    try:
+        # 1. Copie vers backup
+        backup_path = os.path.join(CONFIG['PATHS']['BACKUP'], filename)
+        shutil.copy2(file_path, backup_path)
+        log(f"Backup réussi: {filename}")
+        
+        # 2. Transfert NAS
+        if upload_to_nas(file_path):
+            os.remove(file_path)
+            log(f"Suppression réussie: {filename}")
+            return True
+        return False
+        
+    except Exception as e:
+        log(f"ERREUR traitement {filename}: {str(e)}")
+        return False
 
 if __name__ == "__main__":
-	# CONFIGURATION
-	WORDPRESS_URL = "https://sandbox.mqlt.fr"
-	USERNAME = "quentin"
-	PASSWORD = "qgLV 47pR bbgn tFgz mxpq FRsy"
-	
-	# Chemins vers les dossiers
-	script_dir = os.path.dirname(os.path.abspath(__file__))
-	audio_dir = os.path.join(script_dir, "audio")
-	private_dir = os.path.join(script_dir, "privé")
-	backup_dir = os.path.join(script_dir, "backup")
-
-	# Créer les dossiers s'ils n'existent pas
-	for folder in [private_dir, backup_dir]:
-		if not os.path.exists(folder):
-			os.makedirs(folder)
-
-	# Vérifier si le dossier audio existe
-	if not os.path.exists(audio_dir):
-		print(f"Erreur: Le dossier {audio_dir} n'existe pas.")
-		exit()
-
-	# Lister tous les fichiers dans le dossier audio
-	wav_files = [f for f in os.listdir(audio_dir) if os.path.isfile(os.path.join(audio_dir, f))]
-	
-	if not wav_files:
-		print("Aucun fichier trouvé dans le dossier audio.")
-		exit()
-
-	# Traiter chaque fichier
-	for wav_file in wav_files:
-		file_path = os.path.join(audio_dir, wav_file)
-		
-		# Vérifier si le fichier commence par "2"
-		if wav_file.startswith('2'):
-			try:
-				# Copier vers backup
-				backup_path = os.path.join(backup_dir, wav_file)
-				shutil.copy2(file_path, backup_path)
-				
-				# Copier vers privé
-				private_path = os.path.join(private_dir, wav_file)
-				shutil.copy2(file_path, private_path)
-
-				# Supprimer l'original
-				os.remove(file_path)
-				
-			except Exception as e:
-				print(f"Erreur lors du traitement du fichier {wav_file}: {str(e)}")
-			continue
-
-		if wav_file.endswith('.wav'):
-			os.remove(file_path)
-		
-		# Pour les autres fichiers, procéder à l'upload dans le WordPress
-		result = upload_file_to_wordpress(file_path, WORDPRESS_URL, USERNAME, PASSWORD)
-		
-		if result:
-			print("Détails du fichier uploadé:")
-			print(f"ID: {result.get('id')}")
-			print(f"URL: {result.get('source_url')}")
-			print(f"Titre: {result.get('title', {}).get('rendered', '')}")
+    init_dirs()
+    log("Démarrage du script")
+    
+    audio_dir = CONFIG['PATHS']['AUDIO']
+    if not os.path.exists(audio_dir):
+        log(f"ERREUR: Dossier audio introuvable {audio_dir}")
+        sys.exit(1)
+    
+    for filename in os.listdir(audio_dir):
+        file_path = os.path.join(audio_dir, filename)
+        
+        if not os.path.isfile(file_path):
+            continue
+            
+        if filename.lower().endswith('.wav'):
+            try:
+                os.remove(file_path)
+                log(f"Fichier .wav supprimé: {filename}")
+            except Exception as e:
+                log(f"ERREUR suppression .wav: {filename} - {str(e)}")
+            continue
+            
+        transfer_file(file_path)
+    
+    log("Script terminé")

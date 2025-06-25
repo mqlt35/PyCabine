@@ -9,7 +9,7 @@ def extract_datetime_from_filename(filename):
 		if filename.lower().endswith('.mp3'):
 			filename = filename[:-4]
 		
-		# Supprime le premier chiffre
+		# Supprime le premier chiffre (inutile)
 		parts = filename.split('_')
 		if len(parts) >= 3 and parts[0].isdigit():
 			filename = '_'.join(parts[1:])

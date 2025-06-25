@@ -1,5 +1,5 @@
 @echo off
 python CreateImage.py
-python UploadFichier.py
 python CreateArticle.py
+python UploadFichier.py
 pause
