@@ -12,8 +12,8 @@ api_url = f"{site_url}/wp-json/wp/v2/posts"
 categories_url = f"{site_url}/wp-json/wp/v2/categories"
 tags_url = f"{site_url}/wp-json/wp/v2/tags"
 media_url = f"{site_url}/wp-json/wp/v2/media"
-username = "cabine"
-app_password = "M1pS LsLQ dn2N O9s6 ALw7 lU5M"
+username = ""
+app_password = ""
 
 ctx = ssl.create_default_context()
 ctx.check_hostname = False

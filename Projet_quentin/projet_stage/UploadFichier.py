@@ -13,10 +13,10 @@ else:
 # Configuration
 CONFIG = {
     'NAS': {
-        'IP': "192.168.20.96",
-        'SHARE': "cabine",
-        'USERNAME': "rpi",
-        'PASSWORD': "Latouche35",
+        'IP': "",
+        'SHARE': "",
+        'USERNAME': "",
+        'PASSWORD': "",
         'REMOTE_PATH': "audio_sauvegarde"
     },
     'PATHS': {
